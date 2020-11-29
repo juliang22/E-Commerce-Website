@@ -35,6 +35,7 @@ const cartItemsFromStorage = localStorage.getItem('cartItems') ?
 	JSON.parse(localStorage.getItem('cartItems')) :
 	[]
 const initialCartState = { ...cartItemsFromStorage }
+
 const CartContextProvider = (props) => {
 	const [cartState, cartDispatch] = useReducer(cartReducer, initialCartState)
 

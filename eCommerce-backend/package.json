@@ -1,0 +1,30 @@
+{
+  "name": "shopping-car-app",
+  "version": "1.0.0",
+  "description": "Practicing the mern stack woot woot",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "cd ../eCommerce-frontend && npm start",
+    "dev": "concurrently \" npm run server\" \" npm run client\"",
+    "data:import": "node data/seeder",
+    "data:destroy": "node data/seeder -d"
+  },
+  "author": "Julian Grunauer",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "concurrently": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
+    "mongoose": "^5.10.15"
+  }
+}

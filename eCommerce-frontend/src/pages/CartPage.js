@@ -8,7 +8,7 @@ import { CartContext } from '../context/CartContext'
 const CartPage = ({ match, location, history }) => {
 	const { cartState, updateCart } = useContext(CartContext)
 	//const qty = Number(location.search.split('=')[1]) //after the ? in the search params (?qty=1) and then splits it and grabs what is after the =
-	const checkoutHandler = () => {
+	const checkoutHandler = (name) => {
 		history.push('/login?redirect=shipping') // If not logged in, go to login, if they are, go to shipping
 	}
 
@@ -64,7 +64,7 @@ const CartPage = ({ match, location, history }) => {
 				<Card>
 					<ListGroup variant='flush'>
 						<ListGroup.Item>
-							<h2>Subtotal: ({Object.values(cartState).reduce((acc, itm) => acc + itm.qty, 0)})</h2>
+							<h2>Subtotal: ({Object.values(cartState).reduce((acc, itm) => acc + Number(itm.qty), 0)})</h2>
 							${Object.values(cartState).reduce((acc, itm) => acc + itm.price * itm.qty, 0).toFixed(2)}
 						</ListGroup.Item>
 						<ListGroup.Item>

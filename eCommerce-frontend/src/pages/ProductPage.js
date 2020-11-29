@@ -17,12 +17,16 @@ const ProductPage = ({ history, match }) => {
 	})
 	const [qty, setQty] = useState(1)
 
-	const { addToCart } = useContext(CartContext)
+	const { addToCart, cartState } = useContext(CartContext)
 
 	if (error) return <ErrorMessage variant='danger' error={error} />
 	else {
 		const { getProduct: product } = data || {} //destructures product if data has come through, else if its still loading, product is empty obj
-		const addToCartHandler = (e) => {
+		const quantityExceedStock = (product) => {
+			console.log(product?.countInStock - ~~cartState[product?.name]?.qty)
+			return product?.countInStock - ~~cartState[product?.name]?.qty
+		}
+		const addToCartHandler = (e, name) => {
 			history.push(`/cart/${match.params.id}?qty=${qty}`) //redirects to product id with a query string for quantity
 			setQty(e.target.value)
 			addToCart({ ...product, qty })
@@ -85,7 +89,7 @@ const ProductPage = ({ history, match }) => {
 									</Row>
 								</ListGroup.Item>
 								{
-									product?.countInStock > 0 && (
+									(product?.countInStock > 0 && quantityExceedStock(product) > 0) && (
 										<ListGroup.Item>
 											<Row>
 												<Col>QTY</Col>
@@ -95,7 +99,7 @@ const ProductPage = ({ history, match }) => {
 														value={qty}
 														onChange={(e) => setQty(e.target.value)}
 													>
-														{[...Array(product.countInStock).keys()].map(
+														{[...Array(product.countInStock - ~~cartState[product.name]?.qty + 1).keys()].map(
 															(x) => (
 																<option key={x + 1} value={x + 1}>
 																	{x + 1}
@@ -112,8 +116,8 @@ const ProductPage = ({ history, match }) => {
 									<Button
 										className="btn-block"
 										type='button'
-										disabled={product?.countInStock === 0}
-										onClick={addToCartHandler}
+										disabled={product?.countInStock === 0 || !quantityExceedStock(product)}
+										onClick={(e) => addToCartHandler(e, product?.name)}
 									> Add to Cart
 									</Button>
 								</ListGroup.Item>
