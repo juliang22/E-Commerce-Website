@@ -4,6 +4,7 @@ import App from './App'
 import { ApolloProvider, InMemoryCache, ApolloClient, from } from '@apollo/client'
 import { createHttpLink } from "apollo-link-http";
 import { onError } from "@apollo/client/link/error";
+import { setContext } from "@apollo/client/link/context";
 
 const handleError = onError(({ graphQLErrors, networkError }) => {
 	if (graphQLErrors)
@@ -16,10 +17,24 @@ const handleError = onError(({ graphQLErrors, networkError }) => {
 	if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
+const httplink = createHttpLink({ uri: 'http://localhost:5000/graphql', credentials: 'include' });
+
+const authLink = setContext((_, { headers }) => {
+	// get the authentication token from local storage if it exists
+	const token = localStorage.getItem('UserToken');
+	// return the headers to the context so httpLink can read them => basically creates a header with the user token so that the backend knows who sent the request
+	return {
+		headers: {
+			...headers,
+			authorization: token ? `Bearer ${token}` : "",
+		}
+	}
+});
+
 // Chaining links together (basically like express middleware)
 const links = from([
 	handleError,
-	createHttpLink({ uri: 'http://localhost:5000/graphql' })
+	authLink.concat(httplink),
 ]);
 
 

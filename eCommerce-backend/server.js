@@ -2,7 +2,7 @@ import apollo from 'apollo-server'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
-dotenv.config() // Allows us to use the .env file to keep stuff away from git
+dotenv.config() // Allows us to use the .env file to keep stuff away from git, this funciton loads all the consts from the .env file into our process
 
 import resolvers from './graphql/resolvers/index.js'
 import typeDefs from './graphql/typeDefs.js'
@@ -19,10 +19,11 @@ const corsOptions = {
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	cors: corsOptions
+	cors: corsOptions,
+	context: ({ req }) => ({ req })
 })
 
-export const connectDB = async () => {
+const connectDB = async () => {
 	try {
 		const conn = await mongoose.connect(MONGODB, {
 			useNewUrlParser: true,
@@ -34,6 +35,7 @@ export const connectDB = async () => {
 		console.log(`Server running in ${process.env.NODE_ENV} mode at port ${PORT}`)
 	} catch (error) {
 		console.log(`Error: ${error.message}`)
+		server.stop()
 		process.exit(1)
 	}
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
 
@@ -6,23 +6,25 @@ import ErrorMessage from '../components/ErrorMessage'
 import { CartContext } from '../context/CartContext'
 
 const CartPage = ({ match, location, history }) => {
-	const { cartState, updateCart } = useContext(CartContext)
+	const { cartItems, updateCart } = useContext(CartContext)
 	//const qty = Number(location.search.split('=')[1]) //after the ? in the search params (?qty=1) and then splits it and grabs what is after the =
+
 	const checkoutHandler = (name) => {
 		history.push('/login?redirect=shipping') // If not logged in, go to login, if they are, go to shipping
 	}
+
+	console.log(cartItems);
 
 	return (
 		<Row>
 			<Col md={8}>
 				<h1>Shopping Cart</h1>
-				{cartState.length === 0 ?
-					<ErrorMessage>
-						Your cart is empty
+				{cartItems && Object.keys(cartItems).length === 0 ?
+					<ErrorMessage error={{ message: `Your cart is empty` }}>
 						<Link to='/'>Go Back</Link>
 					</ErrorMessage> : (
 						<ListGroup variant='flush'>
-							{Object.values(cartState).map(item => (
+							{cartItems && Object.values(cartItems).map(item => (
 								<ListGroup.Item key={item.name}>
 									<Row>
 										<Col md={2}>
@@ -38,16 +40,20 @@ const CartPage = ({ match, location, history }) => {
 												value={item.qty}
 												onChange={(e) => updateCart({ ...item, qty: Number(e.target.value) })}
 											>
-												{[...Array(item.countInStock).keys()].map(
-													(x) => (
-														<option key={x + 1} value={x + 1}>
-															{x + 1}
+												{Array(item.countInStock).fill(null).map(
+													(x, i) => (
+														<option key={i + 1} value={i + 1}>
+															{i + 1}
 														</option>
 													)
 												)}
 											</Form.Control>
 											<Col md={2}>
-												<Button type='button' variant='light' onClick={() => updateCart({ ...item, qty: 0 })}>
+												<Button
+													type='button'
+													variant='light'
+													onClick={() => updateCart({ ...item, qty: 0 })}
+												>
 													<i className='fas fa-trash' />
 												</Button>
 											</Col>
@@ -64,14 +70,14 @@ const CartPage = ({ match, location, history }) => {
 				<Card>
 					<ListGroup variant='flush'>
 						<ListGroup.Item>
-							<h2>Subtotal: ({Object.values(cartState).reduce((acc, itm) => acc + Number(itm.qty), 0)})</h2>
-							${Object.values(cartState).reduce((acc, itm) => acc + itm.price * itm.qty, 0).toFixed(2)}
+							<h2>Subtotal: ({cartItems ? Object.values(cartItems).reduce((acc, itm) => acc + Number(itm.qty), 0) : 0})</h2>
+							${cartItems ? Object.values(cartItems).reduce((acc, itm) => acc + itm.price * itm.qty, 0).toFixed(2) : 0}
 						</ListGroup.Item>
 						<ListGroup.Item>
 							<Button
 								type='button'
 								className='btn-block'
-								disabled={cartState.length === 0}
+								disabled={cartItems && Object.values(cartItems).length === 0}
 								onClick={checkoutHandler}
 							>Proceed to Checkout
 							</Button>

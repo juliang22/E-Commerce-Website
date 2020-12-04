@@ -19,3 +19,25 @@ h2 {
 .rating span {
 	margin: .01rem;
 }
+
+a {
+	text-decoration: none !important
+}
+
+.btn-link {
+	text-decoration: none !important;
+}
+
+.btn:hover {
+	color: #fff !important;
+}
+
+.logout {
+	padding: .56rem .5rem !important;
+	color: rgba(255, 255, 255, .5) !important;
+	text-decoration: none !important;
+	font-size: .765625rem !important;
+	text-transform: uppercase !important;
+	font-weight: 600 !important;
+	letter-spacing: 1px !important;
+}

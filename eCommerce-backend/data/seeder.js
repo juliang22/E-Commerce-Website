@@ -7,7 +7,6 @@ import User from '../graphql/models/User.js'
 import Product from '../graphql/models/Product.js'
 import Order from '../graphql/models/Order.js'
 
-
 dotenv.config()
 
 const connectDB = async () => {
@@ -17,14 +16,13 @@ const connectDB = async () => {
 			useNewUrlParser: true,
 			useCreateIndex: true,
 		})
-
 		console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline)
 	} catch (error) {
 		console.error(`Error: ${error.message}`.red.underline.bold)
 		process.exit(1)
 	}
 }
-connectDB()
+await connectDB()
 
 const importData = async () => {
 	try {

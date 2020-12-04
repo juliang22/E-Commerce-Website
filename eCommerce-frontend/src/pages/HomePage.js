@@ -16,8 +16,8 @@ const HomeScreen = () => {
 		<>
 			{loading ?
 				(<Row>
-					{loadingData.map(box => (
-						<Col key={Math.random()} sm={12} md={6} lg={4} xl={3}>
+					{loadingData.map((box, i) => (
+						<Col key={i} sm={12} md={6} lg={4} xl={3}>
 							<Product product={box} />
 						</Col>
 					))}

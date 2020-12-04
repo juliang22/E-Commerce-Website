@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
-import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Card, Button, Form, Alert } from 'react-bootstrap';
 import { useQuery } from '@apollo/client';
 import Skeleton from 'react-loading-skeleton';
 
@@ -8,28 +8,43 @@ import { FETCH_PRODUCT_QUERY } from '../util/queries.js'
 import Rating from '../components/Rating'
 import ErrorMessage from '../components/ErrorMessage';
 import { CartContext } from '../context/CartContext'
+import { AuthContext } from '../context/AuthContext'
 
 const ProductPage = ({ history, match }) => {
-	const { data, error } = useQuery(FETCH_PRODUCT_QUERY, {
+	const { data, queryError } = useQuery(FETCH_PRODUCT_QUERY, {
 		variables: {
 			productID: match.params.id
 		}
 	})
 	const [qty, setQty] = useState(1)
+	const [error, setError] = useState(null)
 
-	const { addToCart, cartState } = useContext(CartContext)
-
-	if (error) return <ErrorMessage variant='danger' error={error} />
+	const { addToCart, cartItems } = useContext(CartContext)
+	console.log("cartitems", !!cartItems);
+	const { user } = useContext(AuthContext)
+	if (queryError) setError(<ErrorMessage variant="danger" error={ErrorMessage}></ErrorMessage>)
 	else {
 		const { getProduct: product } = data || {} //destructures product if data has come through, else if its still loading, product is empty obj
 		const quantityExceedStock = (product) => {
-			console.log(product?.countInStock - ~~cartState[product?.name]?.qty)
-			return product?.countInStock - ~~cartState[product?.name]?.qty
+			console.log("here", product);
+			if (Object.keys(cartItems).length && product?.countInStock - ~~cartItems[product?.name]?.qty === 0) return true
+			else return false
 		}
 		const addToCartHandler = (e, name) => {
-			history.push(`/cart/${match.params.id}?qty=${qty}`) //redirects to product id with a query string for quantity
-			setQty(e.target.value)
-			addToCart({ ...product, qty })
+			if (!user) setError(
+				<Alert variant='danger' style={{ textAlign: 'center' }
+				} error={{ message: "" }
+				} >
+					<Link to='/login'> Log In </Link> or < Link to='/register' > Register  </Link >
+					<br />
+						To Add Items To Cart
+				</Alert >
+			)
+			else {
+				history.push(`/cart/${match.params.id}?qty=${qty}`) //redirects to product id with a query string for quantity
+				setQty(e.target.value)
+				addToCart({ ...product, qty })
+			}
 		}
 		return (
 			<>
@@ -84,12 +99,16 @@ const ProductPage = ({ history, match }) => {
 											Status:
 									</Col>
 										<Col>
-											{product?.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+											{product?.countInStock > 0 ?
+												quantityExceedStock(product) ?
+													'Full Quantity in Cart' :
+													'In Stock' :
+												'Out of Stock'}
 										</Col>
 									</Row>
 								</ListGroup.Item>
 								{
-									(product?.countInStock > 0 && quantityExceedStock(product) > 0) && (
+									(product?.countInStock > 0 && !quantityExceedStock(product)) && (
 										<ListGroup.Item>
 											<Row>
 												<Col>QTY</Col>
@@ -99,10 +118,10 @@ const ProductPage = ({ history, match }) => {
 														value={qty}
 														onChange={(e) => setQty(e.target.value)}
 													>
-														{[...Array(product.countInStock - ~~cartState[product.name]?.qty + 1).keys()].map(
-															(x) => (
-																<option key={x + 1} value={x + 1}>
-																	{x + 1}
+														{Array(product.countInStock - ~~cartItems[product.name]?.qty).fill(null).map(
+															(x, i) => (
+																<option key={i + 1} value={i + 1}>
+																	{i + 1}
 																</option>
 															)
 														)}
@@ -116,12 +135,13 @@ const ProductPage = ({ history, match }) => {
 									<Button
 										className="btn-block"
 										type='button'
-										disabled={product?.countInStock === 0 || !quantityExceedStock(product)}
+										disabled={product?.countInStock === 0 || quantityExceedStock(product)}
 										onClick={(e) => addToCartHandler(e, product?.name)}
 									> Add to Cart
 									</Button>
 								</ListGroup.Item>
 							</ListGroup>
+							{error}
 						</Card>
 					</Col>
 				</Row>
