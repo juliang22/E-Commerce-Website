@@ -1,23 +1,21 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Navbar, Container, Nav, Button, NavDropdown } from 'react-bootstrap'
+import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
 
-import { AuthContext, logout } from '../context/AuthContext'
+import { AuthContext } from '../context/AuthContext'
 
 const Header = () => {
 	const { user, logout } = useContext(AuthContext)
-	const [redirect, setRedirect] = useState(false)
 
 	const logoutHandler = (e) => {
 		e.preventDefault()
 		logout()
-		setRedirect(true)
 	}
 
 	return (
 		<header>
-			{redirect ? (<Redirect to='/login' />) : false}
+			{user ? false : <Redirect to='/login' />}
 			<Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect>
 				<Container>
 					<LinkContainer to='/'>

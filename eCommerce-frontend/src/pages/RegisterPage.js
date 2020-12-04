@@ -16,9 +16,6 @@ const RegisterScreen = ({ location, history }) => {
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 
-	const redirect = location.search ? location.search.split('=')[1] : '/'
-	console.log(location.search);
-
 	const { login, user } = useContext(AuthContext)
 	const [loginUser] = useMutation(LOGIN_USER, {
 		update(_, result) {
@@ -100,7 +97,7 @@ const RegisterScreen = ({ location, history }) => {
 				<Row className='py-3'>
 					<Col>
 						Have an Account?{' '}
-						<Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+						<Link to={'/login'}>
 							Login
 	  </Link>
 					</Col>

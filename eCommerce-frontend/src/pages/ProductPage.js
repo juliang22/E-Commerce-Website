@@ -20,8 +20,8 @@ const ProductPage = ({ history, match }) => {
 	const [error, setError] = useState(null)
 
 	const { addToCart, cartItems } = useContext(CartContext)
-	console.log("cartitems", !!cartItems);
 	const { user } = useContext(AuthContext)
+
 	if (queryError) setError(<ErrorMessage variant="danger" error={ErrorMessage}></ErrorMessage>)
 	else {
 		const { getProduct: product } = data || {} //destructures product if data has come through, else if its still loading, product is empty obj

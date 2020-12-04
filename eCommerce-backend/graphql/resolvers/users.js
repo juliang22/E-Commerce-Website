@@ -73,7 +73,6 @@ const usersResolver = {
 
 			//Passed all checks
 			const token = generateToken(user)
-			console.log("login user", user);
 			return {
 				...user._doc, //mongoose returns everything in the _doc property it seems, add _ to access returned mongoose data, {...user} has wayyyy more info than we need, _doc jsut retuns the properties we set
 				id: user._id, //user.id is just a string, this returns the id as an object

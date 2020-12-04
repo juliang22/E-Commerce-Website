@@ -36,11 +36,12 @@ const connectDB = async () => {
 	} catch (error) {
 		console.log(`Error: ${error.message}`)
 		server.stop()
+		server.close()
 		process.exit(1)
 	}
 }
+await connectDB()
 
-connectDB()
 
 
 // mongoose

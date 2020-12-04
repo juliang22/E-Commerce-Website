@@ -1,61 +1,38 @@
-import React, { useReducer, createContext } from 'react'
+import React, { createContext } from 'react'
+import { useImmerReducer } from 'use-immer'
 
 const CartContext = createContext()
 
-const cartReducer = (state, action) => {
-	let newCartState
+const cartReducer = (draft, action) => {
 	switch (action.type) {
 		case 'ADD_TO_CART':
-			newCartState = state.cartItems.hasOwnProperty(action.payload.name) ? {
+			draft.cartItems.hasOwnProperty(action.payload.name) ?
 				//Updating product in cart
-				...state,
-				cartItems: {
-					...state.cartItems,
-					[action.payload.name]: {
-						...action.payload,
-						qty: Number(action.payload.qty) + Number(state.cartItems[action.payload.name].qty)
-					}
-				}
-			} : {
-					//Adding new product to cart
-					...state,
-					cartItems: {
-						...state.cartItems,
-						[action.payload.name]: action.payload
-					}
-				}
-			localStorage.setItem('cartItems', JSON.stringify({ ...newCartState.cartItems }))
-			return newCartState
+				draft.cartItems[action.payload.name].qty = Number(action.payload.qty) + Number(draft.cartItems[action.payload.name].qty) :
+				//Adding new product to cart
+				draft.cartItems[action.payload.name] = action.payload
+			localStorage.setItem('cartItems', JSON.stringify({ ...draft.cartItems }))
+			return
 		case 'UPDATE_CART':
-			newCartState = action.payload.qty ? {
+			action.payload.qty ?
 				//Updating the qty of a product
-				...state,
-				cartItems: {
-					...state.cartItems,
-					[action.payload.name]: action.payload
-				}
-			} : {
-					//Deleting a product
-					...state,
-					cartItems: Object.keys(state.cartItems).reduce((newObj, key) => {
-						console.log(key);
-						if (key !== action.payload.name) newObj[key] = state.cartItems[key]
-						return newObj
-					}, {})
-				}
-			localStorage.setItem('cartItems', JSON.stringify({ ...newCartState.cartItems }))
-			return newCartState
-		default:
-			return state
+				draft.cartItems[action.payload.name] = action.payload :
+				//Deleting a product
+				draft.cartItems = Object.keys(draft.cartItems).reduce((newObj, key) => {
+					if (key !== action.payload.name) newObj[key] = draft.cartItems[key]
+					return newObj
+				}, {})
+			localStorage.setItem('cartItems', JSON.stringify({ ...draft.cartItems }))
+			return
 		case 'SAVE_ADDRESS':
-			let addressState = {
-				...state,
-				shippingAddress: {
-					...action.payload
-				}
+			draft.shippingAddress = {
+				...action.payload
 			}
-			localStorage.setItem('shippingAddress', JSON.stringify(addressState))
-			return addressState
+			console.log(draft.shippingAddress);
+			localStorage.setItem('shippingAddress', JSON.stringify(draft.shippingAddress))
+			return
+		default:
+			return draft
 	}
 }
 const cartItems = localStorage.getItem('cartItems') ?
@@ -67,7 +44,7 @@ const shippingAddress = localStorage.getItem('shippingAddress') ?
 const initialCartState = { ...cartItems, ...shippingAddress }
 
 const CartContextProvider = (props) => {
-	const [cartState, cartDispatch] = useReducer(cartReducer, initialCartState)
+	const [cartState, cartDispatch] = useImmerReducer(cartReducer, initialCartState)
 
 	const addToCart = (item) => {
 		cartDispatch({
@@ -90,9 +67,11 @@ const CartContextProvider = (props) => {
 		})
 	}
 
-
-
-	return <CartContext.Provider value={{ cartItems: cartState.cartItems, addToCart, updateCart, saveAddress, shippingAddress: cartState.shippingAddress }} {...props} />
+	return <CartContext.Provider value={{
+		cartItems: cartState.cartItems,
+		addToCart, updateCart, saveAddress,
+		shippingAddress: cartState.shippingAddress
+	}} {...props} />
 }
 
 export { CartContext, CartContextProvider }

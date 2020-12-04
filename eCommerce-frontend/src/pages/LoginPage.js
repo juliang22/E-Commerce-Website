@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useMutation } from '@apollo/client';
@@ -13,7 +13,7 @@ const LoginScreen = ({ location, history }) => {
 	const [errors, setErrors] = useState({})
 	const [password, setPassword] = useState('')
 
-	const { login, user } = useContext(AuthContext)
+	const { login } = useContext(AuthContext)
 	const [loginUser, { loading }] = useMutation(LOGIN_USER, {
 		update(_, result) {
 			console.log("Logged in data: ", result.data.login)
@@ -25,15 +25,6 @@ const LoginScreen = ({ location, history }) => {
 			console.log(err);
 		}
 	})
-
-	//! Dont understand redirect yet
-	const redirect = location.search ? location.search.split('=')[1] : '/'
-
-	useEffect(() => {
-		if (user) {
-			history.push(redirect)
-		}
-	}, [history, user, redirect])
 
 	const loginHandler = (e) => {
 		e.preventDefault()
@@ -66,14 +57,14 @@ const LoginScreen = ({ location, history }) => {
 				</Form.Group>
 
 				<Button type='submit' variant='primary'>
-					Sign In
-        </Button>
+					{loading ? 'Logging In ' : 'Sign In'}
+				</Button>
 			</Form>
 
 			<Row className='py-3'>
 				<Col>
 					New Customer?{' '}
-					<Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+					<Link to={'/register'}>
 						Register
           </Link>
 				</Col>

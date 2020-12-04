@@ -52,8 +52,7 @@ const AuthContextProvider = (props) => {
 
 	// TODO: FIgure out a way to save cart context after a user logs out and logs back in => if not, delete cart context on logout
 	const logout = (user) => {
-		localStorage.removeItem('UserToken')
-		localStorage.removeItem('cartItems')
+		localStorage.clear();
 		authDispatch({
 			type: "LOGOUT"
 		})

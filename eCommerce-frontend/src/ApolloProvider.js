@@ -9,8 +9,8 @@ import { setContext } from "@apollo/client/link/context";
 const handleError = onError(({ graphQLErrors, networkError }) => {
 	if (graphQLErrors)
 		graphQLErrors.map(({ message, locations, path }) => (
-			console.log("GraphQL error]: Message: ", message),
-			console.log("Location: ", locations),
+			console.log("GraphQL error]: Message: ", message) &&
+			console.log("Location: ", locations) &&
 			console.log("Path: ", path))
 		);
 
