@@ -24,12 +24,19 @@ const cartReducer = (draft, action) => {
 				}, {})
 			localStorage.setItem('cartItems', JSON.stringify({ ...draft.cartItems }))
 			return
+		case 'DELETE_CART':
+			draft.cartItems = {}
+			draft.shippingAddress = {}
+			draft.paymentInfo = {}
+			localStorage.removeItem('cartItems', {})
+			localStorage.removeItem('shippingAddress', {})
+			return
 		case 'SAVE_ADDRESS':
-			draft.shippingAddress = {
-				...action.payload
-			}
-			console.log(draft.shippingAddress);
+			draft.shippingAddress = action.payload
 			localStorage.setItem('shippingAddress', JSON.stringify(draft.shippingAddress))
+			return
+		case 'SAVE_PAYMENT_METHOD':
+			draft.paymentInfo.payment = action.payload
 			return
 		default:
 			return draft
@@ -37,11 +44,14 @@ const cartReducer = (draft, action) => {
 }
 const cartItems = localStorage.getItem('cartItems') ?
 	JSON.parse(localStorage.getItem('cartItems')) :
-	{ shippingAddress: {} }
+	{}
 const shippingAddress = localStorage.getItem('shippingAddress') ?
 	JSON.parse(localStorage.getItem('shippingAddress')) :
-	{ cartItems: {} }
-const initialCartState = { ...cartItems, ...shippingAddress }
+	{}
+const paymentInfo = localStorage.getItem('paymentInfo') ?
+	JSON.parse(localStorage.getItem('paymentInfo')) :
+	{}
+const initialCartState = { cartItems, shippingAddress, paymentInfo }
 
 const CartContextProvider = (props) => {
 	const [cartState, cartDispatch] = useImmerReducer(cartReducer, initialCartState)
@@ -60,6 +70,12 @@ const CartContextProvider = (props) => {
 		})
 	}
 
+	const deleteCart = () => {
+		cartDispatch({
+			type: 'DELETE_CART',
+		})
+	}
+
 	const saveAddress = (address) => {
 		cartDispatch({
 			type: 'SAVE_ADDRESS',
@@ -67,10 +83,18 @@ const CartContextProvider = (props) => {
 		})
 	}
 
+	const savePaymentMethod = (payment) => {
+		cartDispatch({
+			type: 'SAVE_PAYMENT_METHOD',
+			payload: payment
+		})
+	}
+
 	return <CartContext.Provider value={{
 		cartItems: cartState.cartItems,
-		addToCart, updateCart, saveAddress,
-		shippingAddress: cartState.shippingAddress
+		shippingAddress: cartState.shippingAddress,
+		paymentInfo: cartState.paymentInfo,
+		addToCart, updateCart, deleteCart, saveAddress, savePaymentMethod
 	}} {...props} />
 }
 

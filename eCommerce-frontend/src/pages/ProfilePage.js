@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react'
 import { Table, Form, Button, Row, Col, Alert } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage'
 import { UPDATE_USER_PROFILE } from '../util/queries';
+import { FETCH_ORDERS_QUERY } from '../util/queries';
 
 const ProfilePage = ({ location, history }) => {
 	const [newUsername, setNewUsername] = useState('')
@@ -16,6 +17,8 @@ const ProfilePage = ({ location, history }) => {
 	const [success, setSuccess] = useState(null)
 
 	const { login, user: { username, email } } = useContext(AuthContext)
+
+	const { data, loading } = useQuery(FETCH_ORDERS_QUERY)
 
 	const [updateProfile] = useMutation(UPDATE_USER_PROFILE, {
 		update(_, result) {
@@ -45,8 +48,8 @@ const ProfilePage = ({ location, history }) => {
 
 	return (
 		<Row>
-			<Col md={6}>
-				<h2>Update User Profile</h2>
+			<Col md={4}>
+				<h2>Update Profile</h2>
 				{error}
 				{success}
 				<Form onSubmit={submitHandler}>
@@ -95,57 +98,50 @@ const ProfilePage = ({ location, history }) => {
             </Button>
 				</Form>
 			</Col>
-			{/* <Col md={9}>
-        <h2>My Orders</h2>
-        {loadingOrders ? (
-          <Loader />
-        ) : errorOrders ? (
-          <Message variant='danger'>{errorOrders}</Message>
-        ) : (
-          <Table striped bordered hover responsive className='table-sm'>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>DELIVERED</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>{order.totalPrice}</td>
-                  <td>
-                    {order.isPaid ? (
-                      order.paidAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    {order.isDelivered ? (
-                      order.deliveredAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <LinkContainer to={`/order/${order._id}`}>
-                      <Button className='btn-sm' variant='light'>
-                        Details
+			<Col md={8}>
+				<h2 style={{ textAlign: "center" }}>My Orders</h2>
+				{data?.getUserOrders.length > 0 && !loading ?
+					<Table striped bordered hover responsive className='table-sm'>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>TOTAL</th>
+								<th>PAID</th>
+								<th>DELIVERED</th>
+								<th></th>
+							</tr>
+						</thead>
+						{data.getUserOrders.map(({ user, orderItems, shippingAddress, paymentMethod, taxPrice, shippingPrice, totalPrice, paymentResult, isDelivered, deliveredAt, _id }) => (
+							<tbody key={_id}>
+								<tr>
+									<td>{_id}</td>
+									<td>{totalPrice}</td>
+									<td>
+										{new Date(paymentResult.paidAt).toDateString()}
+									</td>
+									<td>
+										{isDelivered ? (
+											deliveredAt.substring(0, 10)
+										) : (
+												<i className='fas fa-times' style={{ color: 'red' }}></i>
+											)}
+									</td>
+									<td>
+										<LinkContainer to={`/order/${_id}`}>
+											<Button className='btn-sm' variant='light'>
+												Details
                       </Button>
-                    </LinkContainer>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-      </Col> */}
+										</LinkContainer>
+									</td>
+								</tr>
+
+							</tbody>
+						))}
+					</Table>
+					:
+					<h4 style={{ textAlign: 'center' }}>Purchased items will display here :)</h4>
+				}
+			</Col>
 		</Row>
 	)
 }

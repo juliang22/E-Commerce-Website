@@ -3,6 +3,11 @@ const { Schema, model } = mongoose
 
 const userSchema = new Schema({
 	username: String,
+	orders: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Order',
+		default: []
+	}],
 	email: {
 		type: String,
 		unique: true

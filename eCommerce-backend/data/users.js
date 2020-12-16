@@ -13,7 +13,7 @@ const users = [{
 }, {
 	username: 'JaneDoe',
 	email: 'janeDoe@example.com',
-	password: bcrpyt.hashSync('123456', 10),
+	password: bcrpyt.hashSync('1', 10),
 	isAdmin: true
 }]
 

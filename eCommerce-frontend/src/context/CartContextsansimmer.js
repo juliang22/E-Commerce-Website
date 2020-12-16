@@ -2,6 +2,12 @@ import React, { useReducer, createContext } from 'react'
 
 const CartContext = createContext()
 
+//! This file is not actually used, just an example of past code
+/* 
+EXAMPLE OF WHAT CART CONTEXT WOULD LOOK LIKE WITHOUT IMMER. IT IS A GHASTLY SIGHT 
+*/
+
+
 const cartReducer = (state, action) => {
 	let newCartState
 	switch (action.type) {

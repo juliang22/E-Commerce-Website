@@ -4,6 +4,7 @@ import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
 
 import { AuthContext } from '../context/AuthContext'
+import { ApolloConsumer } from '@apollo/client';
 
 const Header = () => {
 	const { user, logout } = useContext(AuthContext)
@@ -13,35 +14,78 @@ const Header = () => {
 		logout()
 	}
 
+	const userDropdown = () => (
+		<>
+			<LinkContainer to='/cart'>
+				<Nav.Link><i className='fas fa-shopping-cart'></i> Cart</Nav.Link>
+			</LinkContainer>
+			<NavDropdown title={user.username}>
+				<LinkContainer to='/profile'>
+					<NavDropdown.Item> <i className='fas fa-user py-3'></i>
+				&nbsp;&nbsp;Profile
+				</NavDropdown.Item>
+				</LinkContainer>
+				<NavDropdown.Item onClick={e => logoutHandler(e)}>
+					<i className="fas fa-sign-out-alt"></i>
+			&nbsp;&nbsp;Logout
+			</NavDropdown.Item>
+			</NavDropdown>
+		</>
+	)
+
 	return (
 		<header>
-			{user ? false : <Redirect to='/login' />}
+			{user ?
+				false : (
+					<>
+						{/* Clear cache and logout */}
+						<ApolloConsumer>
+							{client => {
+								client.clearStore()
+								client.cache.gc()
+							}}
+						</ApolloConsumer>
+						<Redirect to='/login' />
+					</>
+				)
+			}
 			<Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect>
 				<Container>
 					<LinkContainer to='/'>
-						<Navbar.Brand>Pro Shop</Navbar.Brand>
+						<Navbar.Brand>ProShop</Navbar.Brand>
 					</LinkContainer>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
 						<Nav className="ml-auto">
-							{user ? (
-								<>
-									<LinkContainer to='/cart'>
-										<Nav.Link><i className='fas fa-shopping-cart'></i> Cart</Nav.Link>
-									</LinkContainer>
-									<NavDropdown title={user.username}>
-										<LinkContainer to='/profile'>
-											<NavDropdown.Item> <i className='fas fa-user py-3'></i>
-											&nbsp;&nbsp;Profile
-											</NavDropdown.Item>
-										</LinkContainer>
-										<NavDropdown.Item onClick={e => logoutHandler(e)}>
-											<i class="fas fa-sign-out-alt"></i>
-										&nbsp;&nbsp;Logout
-										</NavDropdown.Item>
-									</NavDropdown>
-								</>
-							) : (
+							{user ?
+								user?.isAdmin ?
+									<>
+										{userDropdown()}
+										<NavDropdown title='Admin' id='adminmenu'>
+											<LinkContainer to='/admin/userlist'>
+												<NavDropdown.Item>
+													<i className='fas fa-users py-3'></i>
+													&nbsp;&nbsp;User List
+												</NavDropdown.Item>
+											</LinkContainer>
+											<LinkContainer to='/admin/productslist'>
+												<NavDropdown.Item>
+													<i className="fas fa-gift py-3"></i>
+													&nbsp;&nbsp;Product List
+													</NavDropdown.Item>
+											</LinkContainer>
+											<LinkContainer to='/admin/orders'>
+												<NavDropdown.Item>
+													<i className="fas fa-clipboard-list py-3"></i>
+													&nbsp;&nbsp;Order List
+													</NavDropdown.Item>
+											</LinkContainer>
+										</NavDropdown>
+									</>
+									: (
+										userDropdown()
+									)
+								: (
 									<LinkContainer to="/login">
 										<Nav.Link ><i className='fas fa-user'></i> Login</Nav.Link>
 									</LinkContainer>

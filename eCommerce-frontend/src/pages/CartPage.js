@@ -10,21 +10,19 @@ const CartPage = ({ match, location, history }) => {
 	//const qty = Number(location.search.split('=')[1]) //after the ? in the search params (?qty=1) and then splits it and grabs what is after the =
 
 	const checkoutHandler = (name) => {
-		history.push('/login?redirect=shipping') // If not logged in, go to login, if they are, go to shipping
+		history.push('/shipping') // If not logged in, go to login, if they are, go to shipping
 	}
-
-	console.log(cartItems);
 
 	return (
 		<Row>
 			<Col md={8}>
 				<h1>Shopping Cart</h1>
-				{cartItems && Object.keys(cartItems).length === 0 ?
+				{Object.keys(cartItems).length === 0 ?
 					<ErrorMessage error={{ message: `Your cart is empty` }}>
 						<Link to='/'>Go Back</Link>
 					</ErrorMessage> : (
 						<ListGroup variant='flush'>
-							{cartItems && Object.values(cartItems).map(item => (
+							{Object.values(cartItems).map(item => (
 								<ListGroup.Item key={item.name}>
 									<Row>
 										<Col md={2}>
@@ -77,7 +75,7 @@ const CartPage = ({ match, location, history }) => {
 							<Button
 								type='button'
 								className='btn-block'
-								disabled={cartItems && Object.values(cartItems).length === 0}
+								disabled={Object.values(cartItems).length === 0}
 								onClick={checkoutHandler}
 							>Proceed to Checkout
 							</Button>

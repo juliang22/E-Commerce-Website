@@ -26,8 +26,7 @@ const ProductPage = ({ history, match }) => {
 	else {
 		const { getProduct: product } = data || {} //destructures product if data has come through, else if its still loading, product is empty obj
 		const quantityExceedStock = (product) => {
-			console.log("here", product);
-			if (Object.keys(cartItems).length && product?.countInStock - ~~cartItems[product?.name]?.qty === 0) return true
+			if (cartItems && Object.keys(cartItems).length && product?.countInStock - ~~cartItems[product?.name]?.qty === 0) return true
 			else return false
 		}
 		const addToCartHandler = (e, name) => {
@@ -118,7 +117,7 @@ const ProductPage = ({ history, match }) => {
 														value={qty}
 														onChange={(e) => setQty(e.target.value)}
 													>
-														{Array(product.countInStock - ~~cartItems[product.name]?.qty).fill(null).map(
+														{Array(product?.countInStock - ~~cartItems[product.name]?.qty).fill(null).map(
 															(x, i) => (
 																<option key={i + 1} value={i + 1}>
 																	{i + 1}

@@ -7,15 +7,11 @@ const orderSchema = new Schema({
 		ref: 'User'
 	},
 	orderItems: [{
-		name: {
-			name: String,
-			qty: Number,
-			image: String,
-			price: Number,
-			product: {
-				type: mongoose.Schema.Types.ObjectId
-			}
-		}
+		product: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Product'
+		},
+		qtyOrdered: Number
 	}],
 	shippingAddress: {
 		address: String,
@@ -25,10 +21,9 @@ const orderSchema = new Schema({
 	},
 	paymentMethod: String,
 	paymentResult: {
-		id: String,
-		status: String,
-		updateTime: String,
-		emailAddress: String
+		emailAddress: { type: String },
+		paidAt: { type: String },
+		paymentID: { type: String }
 	},
 	taxPrice: {
 		type: Number,
@@ -42,16 +37,13 @@ const orderSchema = new Schema({
 		type: Number,
 		default: 0.0
 	},
-	isPaid: {
-		type: Boolean,
-		default: false
-	},
-	paidAt: Date,
 	isDelivered: {
 		type: Boolean,
 		default: false
 	},
-	deliveredAt: Date,
+	deliveredAt: { type: String, default: "Products have not been delivered." }
+}, {
+	timestamps: true
 })
 
 export default new model('Order', orderSchema)

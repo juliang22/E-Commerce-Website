@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import CheckoutSteps from '../components/CheckoutSteps'
 
 import FormContainer from '../components/FormContainer'
 // import CheckoutSteps from '../components/CheckoutSteps'
@@ -8,7 +9,6 @@ import { CartContext } from '../context/CartContext'
 
 const ShippingPage = ({ history }) => {
 	const { shippingAddress, saveAddress } = useContext(CartContext)
-	//const { shippingAddress } = cart
 
 	const [address, setAddress] = useState(shippingAddress?.address)
 	const [city, setCity] = useState(shippingAddress?.city)
@@ -23,7 +23,7 @@ const ShippingPage = ({ history }) => {
 
 	return (
 		<FormContainer>
-			{/* <CheckoutSteps step1 step2 /> */}
+			<CheckoutSteps step1 step2 />
 			<h1>Shipping</h1>
 			<Form onSubmit={submitHandler}>
 				<Form.Group controlId='address'>
@@ -31,7 +31,7 @@ const ShippingPage = ({ history }) => {
 					<Form.Control
 						type='text'
 						placeholder='Enter address'
-						value={address}
+						value={address || ''}
 						required
 						onChange={(e) => setAddress(e.target.value)}
 					></Form.Control>
@@ -42,7 +42,7 @@ const ShippingPage = ({ history }) => {
 					<Form.Control
 						type='text'
 						placeholder='Enter city'
-						value={city}
+						value={city || ''}
 						required
 						onChange={(e) => setCity(e.target.value)}
 					></Form.Control>
@@ -53,7 +53,7 @@ const ShippingPage = ({ history }) => {
 					<Form.Control
 						type='text'
 						placeholder='Enter postal code'
-						value={postalCode}
+						value={postalCode || ''}
 						required
 						onChange={(e) => setPostalCode(e.target.value)}
 					></Form.Control>
@@ -64,7 +64,7 @@ const ShippingPage = ({ history }) => {
 					<Form.Control
 						type='text'
 						placeholder='Enter country'
-						value={country}
+						value={country || ''}
 						required
 						onChange={(e) => setCountry(e.target.value)}
 					></Form.Control>

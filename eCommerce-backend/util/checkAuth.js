@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import apollo from 'apollo-server'
-const { AuthenticationError } = apollo
+const { AuthenticationError, UserInputError } = apollo
+
+import User from "../graphql/models/User.js";
 
 // JWT making requests: Whenever the user wants to access a protected route or resource, the user agent should send the JWT token, typically in the Authorization header using the Bearer schema. The content of the header should look like the following: Authorization: Bearer <token>
 
-const authHeader = (context) => {
+const authHeader = async (context) => {
 	// context = {...headers}, has an object with many things including headers that include the authentification info
 	const authHeader = context.req.headers.authorization // Looks like: Authorization: Bearer <token>
 
@@ -14,7 +16,9 @@ const authHeader = (context) => {
 		if (token) {
 			try {
 				const user = jwt.verify(token, process.env.SECRET_KEY)
-				return user
+				const newUser = await User.findOne({ _id: user.id })
+				if (!newUser) throw new UserInputError('User not found')
+				return newUser
 			} catch (error) {
 				throw new AuthenticationError('Invalid/Expired token')
 			}

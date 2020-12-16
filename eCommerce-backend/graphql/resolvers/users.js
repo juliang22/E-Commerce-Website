@@ -3,7 +3,7 @@ import apollo from 'apollo-server'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 const { UserInputError } = apollo
-import checkAuth from '../../util/checkAuth.js';
+import checkAuth from '../../util/checkAuth.js'
 
 import { validateLoginInput, validateRegisterInput } from '../../util/validators.js'
 
@@ -54,6 +54,13 @@ const createOrUpdateUser = async (username, email, password, action) => {
 }
 
 const usersResolver = {
+	Query: {
+		getUsers: async (_, __, context) => {
+			const user = await checkAuth(context)
+			if (!user.isAdmin) throw new Error('User does not have admin status')
+			return await User.find({ _id: { $ne: user._id } })
+		}
+	},
 	Mutation: {
 		login: async (_, { email, password }) => {
 			const { errors, valid } = validateLoginInput(email, password)
@@ -84,14 +91,27 @@ const usersResolver = {
 			const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
 			if (!valid) throw new UserInputError(`${JSON.stringify(Object.values(errors)).slice(2, -2)}`)
 
+			//features of register ond update were very similar so I extracted similar features into createOrUpdateUser
 			return await createOrUpdateUser(username, email, password, { type: 'CREATE' })
 		},
 		updateUserProfile: async (_, { username, email, password }, context) => {
-			//Check that they are authenticated
-			let user = checkAuth(context)
-			user = await User.findOne({ _id: user.id })
-			if (!user) throw new UserInputError('User not found')
+			//Check that they are authenticated (token sent from frontend) & that user exists in db
+			let user = await checkAuth(context)
 			return await createOrUpdateUser(username, email, password, { type: 'UPDATE', payload: user })
+		},
+		deleteUser: async (_, { id }, context) => {
+			const adminUser = await checkAuth(context)
+			if (!adminUser.isAdmin) throw new Error('User does not have admin status')
+			const { ok } = await User.deleteOne({ _id: id })
+			return ok === 1 ? id.toString() : "not deleted"
+		},
+		editAdminStatus: async (_, { id }, context) => {
+			const adminUser = await checkAuth(context)
+			if (!adminUser.isAdmin) throw new Error('User does not have admin status')
+			const user = await User.findOne({ _id: id })
+			user.isAdmin = !user.isAdmin
+			await user.save()
+			return user.isAdmin
 		}
 	}
 }
