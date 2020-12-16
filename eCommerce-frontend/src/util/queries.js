@@ -13,6 +13,7 @@ export const FETCH_PRODUCT_QUERY = gql`
 			rating
 			numReviews
 			id
+			reviews {username, rating, comment, createdAt}
 		}
 	}
 `
@@ -179,7 +180,7 @@ export const GET_PAYPAL_CLIENTID = gql`
 }
 `;
 
-export const FETCH_ORDERS_QUERY = gql`
+export const FETCH_USER_ORDERS_QUERY = gql`
 {
 	getUserOrders {
 		user { username, _id }
@@ -220,6 +221,28 @@ export const FETCH_ORDER_QUERY = gql`
 		}
 	}
 `
+
+export const FETCH_ALL_ORDERS_QUERY = gql`
+	{
+		getOrders {
+			user { username, _id }
+			orderItems {
+				product {name image id price}
+      			qtyOrdered
+    		}
+			shippingAddress { address city postalCode country }
+			paymentMethod
+			taxPrice
+			shippingPrice
+			totalPrice
+			paymentResult { paidAt }
+			isDelivered
+			deliveredAt
+			_id
+		}
+	}
+`
+
 export const FETCH_USER_LIST = gql`
 	{
 		getUsers {
@@ -243,11 +266,14 @@ export const EDIT_ADMIN_STATUS = gql`
 	}
 `
 
-// export const UPLOAD_FILE = gql`
-//   mutation($file: Upload!) {
-//     uploadFile(file: $file) {
-//       success
-//     }
-//   }
-// `;
+export const EDIT_DELIVERY_STATUS = gql`
+	mutation markOrderAsDelivered($orderID: ID!){
+		markOrderAsDelivered(orderID: $orderID) 
+	}
+`
+export const CREATE_REVIEW = gql`
+	mutation createReview($productID: ID! $rating: Int! $comment: String!){
+		createReview(productID: $productID rating: $rating comment: $comment) 
+	}
+`
 

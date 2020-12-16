@@ -31,7 +31,6 @@ const server = new ApolloServer({
 const app = express()
 app.use(graphqlUploadExpress())
 app.use(express.static('data')) //exposes data folder to public so static images can be served to frontend
-app.use(cors(corsOptions));
 server.applyMiddleware({
 	app,
 	cors: corsOptions

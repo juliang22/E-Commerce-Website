@@ -23,6 +23,7 @@ import AdminRoute from './util/AdminRoute';
 import ProductListPage from './adminPages/ProductListPage';
 import EditProductPage from './adminPages/EditProductPage';
 import CreateProductPage from './adminPages/CreateProductPage';
+import OrderListPage from './adminPages/OrderListPage';
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <main className='py-3'>
             <Container>
               {/* Accessed by anyone */}
+              <Route exact path='/search/:keyword' component={HomePage} />
               <Route exact path='/' component={HomePage} />
               <Route path='/login' component={LoginPage} />
               <Route path='/register' component={RegisterPage} />
@@ -49,6 +51,7 @@ const App = () => {
               <AdminRoute path='/admin/productslist' component={ProductListPage} redirect='/' />
               <AdminRoute path='/admin/product/edit/:id' component={EditProductPage} redirect='/' />
               <AdminRoute path='/admin/createproduct' component={CreateProductPage} redirect='/' />
+              <AdminRoute path='/admin/orderslist' component={OrderListPage} redirect='/' />
             </Container>
           </main>
           <Footer />

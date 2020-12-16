@@ -34,7 +34,7 @@ const productsResolver = {
 		// @access	Public
 		async getProduct(_, { productID }) {
 			try {
-				const product = await Product.findById(productID)
+				const product = await Product.findById(productID).populate('reviews')
 				if (product) return product
 				else throw new ApolloError("Product could not be found", 404)
 			} catch (err) {
@@ -43,13 +43,17 @@ const productsResolver = {
 		}
 	},
 	Mutation: {
-		// TODO: fix resolver to include User param from User model, probs will use parent param
-		createProduct: async (_, { name, image, description, brand, category, price, countInStock, rating, numReviews, user }) => {
-			const newProduct = new Product({
-				name, image, description, brand, category, price, countInStock, rating, numReviews, user
-			})
-			const res = await newProduct.save()
-			return res
+		createProduct: async (_, { name, image, description, brand, category, price, countInStock }, context) => {
+			const adminUser = await checkAuth(context)
+			if (!adminUser.isAdmin) throw new Error('User does not have admin status')
+			if (image) image = await imageHandler(image)
+
+			// Finding any null/undefined/empty values
+			const createProd = { name, image, description, brand, category, price, countInStock }
+			const invalid = Object.values(createProd).find(val => val === '' || val == null)
+			if (invalid === '') throw new Error('Please submit a product with all values filled out')
+
+			return await new Product({ ...createProd, user: adminUser }).save()
 		},
 		deleteProduct: async (_, { id }, context) => {
 			const adminUser = await checkAuth(context)
@@ -79,19 +83,27 @@ const productsResolver = {
 			}, {})
 			return await new Product({ ...updatedProd }).save()
 		},
-		createProduct: async (_, { name, image, description, brand, category, price, countInStock }, context) => {
-			const adminUser = await checkAuth(context)
-			if (!adminUser.isAdmin) throw new Error('User does not have admin status')
+		createReview: async (_, { rating, comment, productID }, context) => {
+			let user = await checkAuth(context)
+			let product = await Product.findOne({ _id: productID }).populate('user').populate('reviews')
+			if (!product) throw new Error('Product not found')
 
-			if (image) image = await imageHandler(image)
+			const alreadyReviewed = product.reviews.find(r => r.user._id.toString() === user._id.toString())
+			if (alreadyReviewed) throw new Error('You have already submitted a review for this product')
 
-			// Finding any null/undefined/empty values
-			const createProd = { name, image, description, brand, category, price, countInStock }
-			const invalid = Object.values(createProd).find(val => val === '' || val == null)
-			if (invalid === '') throw new Error('Please submit a product with all values filled out')
-
-			return await new Product({ ...createProd, user: adminUser }).save()
-		},
+			const review = {
+				username: user.username,
+				rating,
+				comment,
+				user: user._id,
+				createdAt: new Date().toISOString()
+			}
+			product.reviews.push(review)
+			product.numReviews = product.reviews.length
+			product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length
+			await product.save()
+			return true
+		}
 	}
 }
 

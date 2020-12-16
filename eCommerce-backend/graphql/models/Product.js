@@ -2,11 +2,15 @@ import mongoose from 'mongoose'
 const { model, Schema } = mongoose
 
 const reviewSchema = new Schema({
-	name: String,
+	username: String,
 	rating: Number,
-	comment: String
-}, {
-	timestamps: true
+	comment: String,
+	createdAt: String,
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'User'
+	},
 })
 
 const productSchema = new Schema({

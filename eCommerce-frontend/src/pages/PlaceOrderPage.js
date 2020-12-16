@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import { CartContext } from '../context/CartContext';
 import CheckoutSteps from '../components/CheckoutSteps'
-import { CREATE_ORDER, FETCH_ORDERS_QUERY } from '../util/queries';
+import { CREATE_ORDER, FETCH_USER_ORDERS_QUERY } from '../util/queries';
 import { GET_PAYPAL_CLIENTID } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage';
 
@@ -41,7 +41,7 @@ const PlaceOrderPage = ({ history }) => {
 
 
 	const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
-		refetchQueries: [{ query: FETCH_ORDERS_QUERY }],
+		refetchQueries: [{ query: FETCH_USER_ORDERS_QUERY }],
 		onCompleted(result) {
 			console.log(result.createOrder)
 			history.push({

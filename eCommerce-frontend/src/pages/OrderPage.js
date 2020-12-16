@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import { Row, Col, ListGroup, Image, Card, Alert } from 'react-bootstrap'
-import { useQuery } from '@apollo/client';
+import { Row, Col, ListGroup, Image, Card, Alert, Button } from 'react-bootstrap'
+import { useQuery, useMutation } from '@apollo/client';
 
 import CheckoutSteps from '../components/CheckoutSteps'
 import { AuthContext } from '../context/AuthContext';
-import { FETCH_ORDER_QUERY } from '../util/queries';
+import { FETCH_ORDER_QUERY, EDIT_DELIVERY_STATUS } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage';
 import Skeleton from 'react-loading-skeleton';
 import { CartContext } from '../context/CartContext';
@@ -24,6 +24,17 @@ const OrderPage = ({ match, history }) => {
 		}
 	}, [justOrdered, deleteCart])
 
+	const [error, setError] = useState(false)
+	const [editDeliveryStatus] = useMutation(EDIT_DELIVERY_STATUS, {
+		refetchQueries: [{ query: FETCH_ORDER_QUERY, variables: { orderID: match.params.id } }],
+		onError(err) {
+			setError(<ErrorMessage variant='danger' error={err}></ErrorMessage>)
+		}
+	})
+	const deliveryHandler = (orderID) => {
+		editDeliveryStatus({ variables: { orderID: _id } })
+	}
+
 
 	const { data, loading, queryError } = useQuery(FETCH_ORDER_QUERY, {
 		variables: { orderID: match.params.id }
@@ -34,14 +45,14 @@ const OrderPage = ({ match, history }) => {
 	const { user, orderItems, shippingAddress, paymentMethod, taxPrice, shippingPrice, totalPrice, paymentResult, isDelivered, deliveredAt, _id } = data?.getUserOrder[0] || {
 		user: "", orderItems: "", shippingAddress: "", paymentMethod: "", taxPrice: "", shippingPrice: "", totalPrice: "", paymentResult: "", isDelivered: "", deliveredAt: "", _id: ""
 	} //if loading, data will be an empty obj, full of empty properties
+
+
 	return (
 		<>
-			{/* Only logged in user has access to their order */}
-			{loading ?
-				false :
-				user._id !== loggedInUser.id ?
-					<Redirect to='/' />
-					: false
+			{/* Only logged in user or admins has access to their order */}
+			{!loading && !loggedInUser.isAdmin && user._id !== loggedInUser.id ?
+				<Redirect to='/' />
+				: false
 			}
 			<CheckoutSteps step1 step2 step3 step4 />
 			<Row>
@@ -143,6 +154,18 @@ const OrderPage = ({ match, history }) => {
 										<Col>${totalPrice}</Col>
 									</Row>
 								</ListGroup.Item>
+								{loggedInUser.isAdmin && !isDelivered && (
+									< ListGroup.Item >
+										{ error}
+										<Button
+											type='button'
+											className='btn btn-block'
+											onClick={() => deliveryHandler(_id)}
+										>
+											Mark As Delivered
+										</Button>
+									</ListGroup.Item>
+								)}
 							</ListGroup>
 						}
 					</Card>

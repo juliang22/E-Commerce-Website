@@ -5,7 +5,6 @@ import Rating from './Rating'
 import Skeleton from 'react-loading-skeleton';
 
 const Product = ({ product }) => {
-	console.log(product?.image);
 	return (
 		<Card className='my-3 p-3 rounded'>
 			<Link to={`/product/${product?.id}`}>

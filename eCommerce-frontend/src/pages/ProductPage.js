@@ -9,13 +9,19 @@ import Rating from '../components/Rating'
 import ErrorMessage from '../components/ErrorMessage';
 import { CartContext } from '../context/CartContext'
 import { AuthContext } from '../context/AuthContext'
+import Review from '../components/Review.js';
 
 const ProductPage = ({ history, match }) => {
-	const { data, queryError } = useQuery(FETCH_PRODUCT_QUERY, {
+	const productID = match.params.id
+	const { data, loading, queryError } = useQuery(FETCH_PRODUCT_QUERY, {
 		variables: {
-			productID: match.params.id
+			productID
 		}
 	})
+	const { name, image, rating, price, description, numReviews, countInStock, reviews } = data?.getProduct || {
+		name: "", image: "", rating: "", price: "", description: "", numReviews: "", countInStock: "", reviews: {}
+	} //if loading, data will be an empty obj, full of empty properties so that there isn't an undefined error and I don't have to put product?.<field> everywhere.
+
 	const [qty, setQty] = useState(1)
 	const [error, setError] = useState(null)
 
@@ -24,12 +30,11 @@ const ProductPage = ({ history, match }) => {
 
 	if (queryError) setError(<ErrorMessage variant="danger" error={ErrorMessage}></ErrorMessage>)
 	else {
-		const { getProduct: product } = data || {} //destructures product if data has come through, else if its still loading, product is empty obj
-		const quantityExceedStock = (product) => {
-			if (cartItems && Object.keys(cartItems).length && product?.countInStock - ~~cartItems[product?.name]?.qty === 0) return true
+		const quantityExceedStock = () => {
+			if (cartItems && Object.keys(cartItems).length && countInStock - ~~cartItems[name]?.qty === 0) return true
 			else return false
 		}
-		const addToCartHandler = (e, name) => {
+		const addToCartHandler = (e) => {
 			if (!user) setError(
 				<Alert variant='danger' style={{ textAlign: 'center' }
 				} error={{ message: "" }
@@ -40,9 +45,9 @@ const ProductPage = ({ history, match }) => {
 				</Alert >
 			)
 			else {
-				history.push(`/cart/${match.params.id}?qty=${qty}`) //redirects to product id with a query string for quantity
+				history.push(`/cart/${productID}?qty=${qty}`) //redirects to product id with a query string for quantity
 				setQty(e.target.value)
-				addToCart({ ...product, qty })
+				addToCart({ ...data?.getProduct, qty })
 			}
 		}
 		return (
@@ -50,11 +55,11 @@ const ProductPage = ({ history, match }) => {
 				<Link to='/' className="btn btn-dark my-3">Go Back</Link>
 				<Row>
 					<Col col={6} >
-						{product?.name ?
+						{name ?
 							<Image
 								onError={i => i.target.style.display = 'none'}
-								src={product?.image}
-								alt={product?.name}
+								src={image}
+								alt={name}
 								fluid
 							/>
 							:
@@ -64,19 +69,19 @@ const ProductPage = ({ history, match }) => {
 					<Col col={6}>
 						<ListGroup variant='flush'>
 							<ListGroup.Item>
-								<h3>{product?.name || <Skeleton count={1} height={60} />}</h3>
+								<h3>{name || <Skeleton count={1} height={60} />}</h3>
 							</ListGroup.Item>
 							{
-								product?.rating &&
+								rating &&
 								<ListGroup.Item>
 									<Rating
-										value={product?.rating}
-										numReviews={`${product?.numReviews} Reviews`}>
+										value={rating}
+										numReviews={`${numReviews} Reviews`}>
 									</Rating>
 								</ListGroup.Item>
 							}
-							<ListGroup.Item>{product?.price ? `Price: $${product?.price}` : <Skeleton count={1} />}</ListGroup.Item>
-							<ListGroup.Item>{product?.description ? `${product?.description}` : <Skeleton count={1} />}</ListGroup.Item>
+							<ListGroup.Item>{price ? `Price: $${price}` : <Skeleton count={1} />}</ListGroup.Item>
+							<ListGroup.Item>{description ? `${description}` : <Skeleton count={1} />}</ListGroup.Item>
 						</ListGroup>
 					</Col>
 					<Col md={3}>
@@ -88,7 +93,7 @@ const ProductPage = ({ history, match }) => {
 											Price:
 									</Col>
 										<Col>
-											<strong>${product?.price}</strong>
+											<strong>${price}</strong>
 										</Col>
 									</Row>
 								</ListGroup.Item>
@@ -98,8 +103,8 @@ const ProductPage = ({ history, match }) => {
 											Status:
 									</Col>
 										<Col>
-											{product?.countInStock > 0 ?
-												quantityExceedStock(product) ?
+											{countInStock > 0 ?
+												quantityExceedStock() ?
 													'Full Quantity in Cart' :
 													'In Stock' :
 												'Out of Stock'}
@@ -107,7 +112,7 @@ const ProductPage = ({ history, match }) => {
 									</Row>
 								</ListGroup.Item>
 								{
-									(product?.countInStock > 0 && !quantityExceedStock(product)) && (
+									(countInStock > 0 && !quantityExceedStock()) && (
 										<ListGroup.Item>
 											<Row>
 												<Col>QTY</Col>
@@ -117,7 +122,7 @@ const ProductPage = ({ history, match }) => {
 														value={qty}
 														onChange={(e) => setQty(e.target.value)}
 													>
-														{Array(product?.countInStock - ~~cartItems[product.name]?.qty).fill(null).map(
+														{Array(countInStock - ~~cartItems[name]?.qty).fill(null).map(
 															(x, i) => (
 																<option key={i + 1} value={i + 1}>
 																	{i + 1}
@@ -134,8 +139,8 @@ const ProductPage = ({ history, match }) => {
 									<Button
 										className="btn-block"
 										type='button'
-										disabled={product?.countInStock === 0 || quantityExceedStock(product)}
-										onClick={(e) => addToCartHandler(e, product?.name)}
+										disabled={countInStock === 0 || quantityExceedStock()}
+										onClick={(e) => addToCartHandler(e, name)}
 									> Add to Cart
 									</Button>
 								</ListGroup.Item>
@@ -144,6 +149,8 @@ const ProductPage = ({ history, match }) => {
 						</Card>
 					</Col>
 				</Row>
+				{!loading &&
+					<Review reviews={reviews} user={user} productID={productID} numReviews={`${numReviews} Reviews`} />}
 			</>
 		)
 	}

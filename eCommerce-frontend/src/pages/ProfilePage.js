@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage'
 import { UPDATE_USER_PROFILE } from '../util/queries';
-import { FETCH_ORDERS_QUERY } from '../util/queries';
+import { FETCH_USER_ORDERS_QUERY } from '../util/queries';
 
 const ProfilePage = ({ location, history }) => {
 	const [newUsername, setNewUsername] = useState('')
@@ -18,7 +18,7 @@ const ProfilePage = ({ location, history }) => {
 
 	const { login, user: { username, email } } = useContext(AuthContext)
 
-	const { data, loading } = useQuery(FETCH_ORDERS_QUERY)
+	const { data, loading } = useQuery(FETCH_USER_ORDERS_QUERY)
 
 	const [updateProfile] = useMutation(UPDATE_USER_PROFILE, {
 		update(_, result) {

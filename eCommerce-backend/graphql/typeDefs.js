@@ -12,7 +12,15 @@ export default gql`
 		countInStock: Int!
 		rating: Float!
 		numReviews: Int!
+		reviews: [Review]
 		user: ID
+	}
+	type Review {
+		username: String!
+		rating: Int!
+		comment: String!
+		user: User!
+		createdAt: String!
 	}
 	type User {
 		username: String!
@@ -75,6 +83,7 @@ export default gql`
 		getUserOrders: [Order]!
 		getUserOrder(orderID: ID!): [Order]!
 		getUsers: [User]!
+		getOrders: [Order]!
 	}
 	type Mutation {
 		login(email: String!, password: String!): User!
@@ -121,5 +130,7 @@ export default gql`
 			price: Float!
 			countInStock: Int!
 		): Product!
+		markOrderAsDelivered(orderID: ID!): Boolean!
+		createReview(comment: String! rating: Int! productID: ID!): Boolean!
 	}
 `

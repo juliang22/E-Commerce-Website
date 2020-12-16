@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
+import { ApolloConsumer } from '@apollo/client'
 
 import { AuthContext } from '../context/AuthContext'
-import { ApolloConsumer } from '@apollo/client';
+
 
 const Header = () => {
 	const { user, logout } = useContext(AuthContext)
@@ -58,38 +59,34 @@ const Header = () => {
 					<Navbar.Collapse id="basic-navbar-nav">
 						<Nav className="ml-auto">
 							{user ?
-								user?.isAdmin ?
-									<>
-										{userDropdown()}
-										<NavDropdown title='Admin' id='adminmenu'>
-											<LinkContainer to='/admin/userlist'>
-												<NavDropdown.Item>
-													<i className='fas fa-users py-3'></i>
-													&nbsp;&nbsp;User List
-												</NavDropdown.Item>
-											</LinkContainer>
-											<LinkContainer to='/admin/productslist'>
-												<NavDropdown.Item>
-													<i className="fas fa-gift py-3"></i>
-													&nbsp;&nbsp;Product List
-													</NavDropdown.Item>
-											</LinkContainer>
-											<LinkContainer to='/admin/orders'>
-												<NavDropdown.Item>
-													<i className="fas fa-clipboard-list py-3"></i>
-													&nbsp;&nbsp;Order List
-													</NavDropdown.Item>
-											</LinkContainer>
-										</NavDropdown>
-									</>
-									: (
-										userDropdown()
-									)
+								userDropdown()
 								: (
 									<LinkContainer to="/login">
 										<Nav.Link ><i className='fas fa-user'></i> Login</Nav.Link>
 									</LinkContainer>
 								)}
+							{user?.isAdmin &&
+								<NavDropdown title='Admin' id='adminmenu'>
+									<LinkContainer to='/admin/userlist'>
+										<NavDropdown.Item>
+											<i className='fas fa-users py-3'></i>
+													&nbsp;&nbsp;User List
+												</NavDropdown.Item>
+									</LinkContainer>
+									<LinkContainer to='/admin/productslist'>
+										<NavDropdown.Item>
+											<i className="fas fa-gift py-3"></i>
+													&nbsp;&nbsp;Product List
+													</NavDropdown.Item>
+									</LinkContainer>
+									<LinkContainer to='/admin/orderslist'>
+										<NavDropdown.Item>
+											<i className="fas fa-clipboard-list py-3"></i>
+													&nbsp;&nbsp;Order List
+													</NavDropdown.Item>
+									</LinkContainer>
+								</NavDropdown>
+							}
 						</Nav>
 					</Navbar.Collapse>
 				</Container>
