@@ -1,0 +1,19 @@
+{
+  "name": "traversy_ecommerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd eCommerce-backend && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliang22/E-Commerce-Website.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juliang22/E-Commerce-Website/issues"
+  },
+  "homepage": "https://github.com/juliang22/E-Commerce-Website#readme"
+}
