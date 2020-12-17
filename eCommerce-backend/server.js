@@ -15,8 +15,12 @@ const PORT = process.env.PORT || 5000
 const MONGODB = process.env.MONGODB
 const { ApolloServer } = apollo
 
+// const corsOptions = {
+// 	origin: "http://localhost:3000",
+// 	credentials: true
+// };
 const corsOptions = {
-	origin: "http://localhost:3000",
+	origin: "https://ecommerce-frontend-486d7.web.app/",
 	credentials: true
 };
 
@@ -28,21 +32,28 @@ const server = new ApolloServer({
 })
 
 //Using an express server because file uploading is apparently broken on normal apollo server lol wutttt: https://github.com/apollographql/apollo-server/issues/3508
+const app = express()
+
+
+
 import * as path from 'path'
 const { dirname } = path
 import { fileURLToPath } from 'url'
-
-const app = express()
-app.use(graphqlUploadExpress())
 const __dirname = dirname(fileURLToPath(import.meta.url))
 console.log(__dirname);
 console.log(path.resolve('./'))
 app.use(express.static(path.join(__dirname, '/data'))) //exposes data folder to public so static images can be served to frontend
+
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(path.join(__dirname, '../eCommerce-frontend/build')))
+	app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../eCommerce-frontend', 'build', 'index.html')))
+}
+
+app.use(graphqlUploadExpress())
 server.applyMiddleware({
 	app,
 	cors: corsOptions
 })
-
 
 const connectDB = async () => {
 	try {
