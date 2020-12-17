@@ -40,10 +40,7 @@ import * as path from 'path'
 const { dirname } = path
 import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
-console.log(__dirname);
-console.log(path.resolve('./'))
 app.use(express.static(path.join(__dirname, '/data'))) //exposes data folder to public so static images can be served to frontend
-
 
 //This goes into our frontend and serves our build file as a static asset. Make sure to go into frontend and run npm build whenever changes are made!
 if (process.env.NODE_ENV === 'production') {
@@ -72,8 +69,8 @@ const connectDB = async () => {
 		server.stop()
 	}
 }
-// await connectDB()
-connectDB()
+await connectDB()
+
 
 
 

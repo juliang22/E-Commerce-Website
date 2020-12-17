@@ -1,20 +1,36 @@
 {
-  "name": "traversy_ecommerce",
+  "name": "shopping-car-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Practicing the mern stack woot woot",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "cd eCommerce-backend && npm i && npm start",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix eCommerce-frontend && npm build --prefix eCommerce-frontend"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node eCommerce-backend/server.js",
+    "server": "nodemon eCommerce-backend/server.js",
+    "client": "cd eCommerce-frontend && npm start",
+    "clean": "pkill node && lsof -i tcp:5000 | awk '{if(NR>1) print $2}' | xargs kill -9",
+    "dev": "concurrently \" npm run server\" \" npm run client\"",
+    "data:import": "node data/seeder",
+    "data:destroy": "node data/seeder -d"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/juliang22/E-Commerce-Website.git"
-  },
-  "author": "",
+  "author": "Julian Grunauer",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/juliang22/E-Commerce-Website/issues"
-  },
-  "homepage": "https://github.com/juliang22/E-Commerce-Website#readme"
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "apollo-server-express": "^2.19.0",
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "concurrently": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs-capacitor": "^6.2.0",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
+    "graphql-upload": "^11.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "mongoose": "^5.11.1"
+  }
 }
