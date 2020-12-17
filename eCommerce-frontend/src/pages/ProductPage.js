@@ -10,6 +10,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import { CartContext } from '../context/CartContext'
 import { AuthContext } from '../context/AuthContext'
 import Review from '../components/Review.js';
+import Meta from '../components/Meta.js';
 
 const ProductPage = ({ history, match }) => {
 	const productID = match.params.id
@@ -52,6 +53,7 @@ const ProductPage = ({ history, match }) => {
 		}
 		return (
 			<>
+				<Meta title={name} description={description} />
 				<Link to='/' className="btn btn-dark my-3">Go Back</Link>
 				<Row>
 					<Col col={6} >

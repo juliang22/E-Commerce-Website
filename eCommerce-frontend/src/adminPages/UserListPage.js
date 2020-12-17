@@ -6,6 +6,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import ErrorMessage from '../components/ErrorMessage'
 import { FETCH_USER_LIST, DELETE_USER, EDIT_ADMIN_STATUS } from '../util/queries';
+import Meta from '../components/Meta';
 
 const UserListScreen = ({ history }) => {
 
@@ -57,6 +58,7 @@ const UserListScreen = ({ history }) => {
 
 	return (
 		<>
+			<Meta title='User List' />
 			{error && <ErrorMessage variant='danger' error={error} />}
 			<h1>Users</h1>
 			{loading ? (

@@ -4,6 +4,7 @@ import FormContainer from '../components/FormContainer'
 
 import CheckoutSteps from '../components/CheckoutSteps'
 import { CartContext } from '../context/CartContext'
+import Meta from '../components/Meta'
 
 const PaymentScreen = ({ history }) => {
 	const { shippingAddress, savePaymentMethod } = useContext(CartContext)
@@ -23,6 +24,7 @@ const PaymentScreen = ({ history }) => {
 
 	return (
 		<FormContainer>
+			<Meta title='Payment' />
 			<CheckoutSteps step1 step2 step3 />
 			<h1>Payment Method</h1>
 			<Form onSubmit={submitHandler}>

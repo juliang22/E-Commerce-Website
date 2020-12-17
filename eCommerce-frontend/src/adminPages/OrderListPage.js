@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { FETCH_ALL_ORDERS_QUERY } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage'
+import Meta from '../components/Meta';
 
 
 const OrderListPage = ({ history }) => {
@@ -14,6 +15,7 @@ const OrderListPage = ({ history }) => {
 
   return (
     <>
+      <Meta title='Order List' />
       <h1>Orders</h1>
       <Table striped bordered hover responsive className='table-sm'>
         <thead>

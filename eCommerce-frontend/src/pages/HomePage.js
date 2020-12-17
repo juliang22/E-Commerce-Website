@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col } from 'react-bootstrap'
-import { useQuery } from '@apollo/client';
+import { Row, Col, Button } from 'react-bootstrap'
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { FETCH_PRODUCTS_QUERY } from '../util/queries.js'
+import { Helmet } from 'react-helmet';
 import Fuse from "fuse.js";
+import { Waypoint } from 'react-waypoint';
 
 import ErrorMessage from '../components/ErrorMessage';
 import Product from '../components/Product'
 import SearchBox from '../components/SearchBox';
-
+import ProductCarousel from '../components/ProductCarousel.js';
+import Meta from '../components/Meta.js';
 
 const HomeScreen = () => {
-	const { data, loading, error } = useQuery(FETCH_PRODUCTS_QUERY)
+	const { data, loading, error, fetchMore } = useQuery(FETCH_PRODUCTS_QUERY)
 	const loadingData = new Array(12).fill(null)
 
+	//Search functionality
 	const [query, setQuery] = useState('')
 	let products = data?.getProducts
-
 	if (!loading) {
 		const fuseOptions = {
-			shouldSort: true,
+			shouldSort: true, //sorts by closest match
 			threshold: 0.4,
-			location: 0,
 			distance: 50,
-			maxPatternLength: 12,
-			keys: ['name']
+			keys: ['name', 'description', 'brand']
 		}
 		const fuse = new Fuse(products, fuseOptions)
 		if (query.length > 0) {
@@ -36,6 +37,7 @@ const HomeScreen = () => {
 	if (error) return <ErrorMessage variant='danger' error={error} />
 	else return (
 		<>
+			<Meta />
 			{loading ?
 				(<Row>
 					{loadingData.map((box, i) => (
@@ -47,13 +49,27 @@ const HomeScreen = () => {
 				) :
 				(
 					<>
+						<ProductCarousel />
 						<SearchBox setQuery={setQuery} />
 						<Row>
-							{products.map(product => (
-								<Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-									{console.log(product)}
-									<Product product={product} />
-								</Col>
+							{products.map((product, i) => (
+								<>
+									<Col key={product.id} sm={12} md={6} lg={4} xl={3}>
+										<Product product={product} />
+									</Col>
+
+									{i === data.getProducts.length - 10 && (
+										<Waypoint onEnter={() => fetchMore({
+											variables: { _id: product.id },
+											updateQuery: (prev, { fetchMoreResult }) => {
+												if (!fetchMoreResult) return
+												return {
+													getProducts: [...prev.getProducts, ...fetchMoreResult.getProducts]
+												}
+											}
+										})} />
+									)}
+								</>
 							))}
 						</Row>
 					</>)

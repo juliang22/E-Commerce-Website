@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col, Alert } from 'react-bootstrap'
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client'
+import { Waypoint } from 'react-waypoint'
 
 import ErrorMessage from '../components/ErrorMessage'
-
-//import Paginate from '../components/Paginate'
-import { FETCH_PRODUCTS_QUERY, DELETE_PRODUCT } from '../util/queries';
+import { FETCH_PRODUCTS_QUERY, DELETE_PRODUCT } from '../util/queries'
+import Meta from '../components/Meta'
 
 const ProductListScreen = ({ history, match }) => {
-	const pageNumber = match.params.pageNumber || 1
 
-	const { data, loading } = useQuery(FETCH_PRODUCTS_QUERY)
+	const { data, loading, fetchMore } = useQuery(FETCH_PRODUCTS_QUERY)
 	const [error, setError] = useState(false)
 	const [message, setMessage] = useState(false)
 	const [deleteProduct] = useMutation(DELETE_PRODUCT, {
@@ -60,6 +58,7 @@ const ProductListScreen = ({ history, match }) => {
 
 	return (
 		<>
+			<Meta title='Product List' />
 			{error && <ErrorMessage variant='danger' error={error} />}
 			<Row className='align-items-center'>
 				<Col>
@@ -83,30 +82,43 @@ const ProductListScreen = ({ history, match }) => {
 					</tr>
 				</thead>
 				<tbody>
-					{data?.getProducts.map(product => (
-						<tr key={product.id}>
-							<td>{product.id}</td>
-							<td>{product.name}</td>
-							<td>${product.price}</td>
-							<td>{product.category}</td>
-							<td>{product.brand}</td>
-							<td>
+					{data?.getProducts.map((product, i) => (
+						<>
+							<tr key={product.id}>
+								<td>{product.id}</td>
+								<td>{product.name}</td>
+								<td>${product.price}</td>
+								<td>{product.category}</td>
+								<td>{product.brand}</td>
+								<td>
 
-								<Button variant='light' className='btn-sm' onClick={() => editProductHandler(product.id)}>
-									<i className='fas fa-edit'></i>
-								</Button>
-								<Button
-									variant='danger'
-									className='btn-sm'
-									onClick={() => deleteHandler(product.id)}
-								>
-									<i className='fas fa-trash'></i>
-								</Button>
-							</td>
-						</tr>
+									<Button variant='light' className='btn-sm' onClick={() => editProductHandler(product.id)}>
+										<i className='fas fa-edit'></i>
+									</Button>
+									<Button
+										variant='danger'
+										className='btn-sm'
+										onClick={() => deleteHandler(product.id)}
+									>
+										<i className='fas fa-trash'></i>
+									</Button>
+								</td>
+							</tr>
+						</>
 					))}
 				</tbody>
 			</Table>
+			{ (
+				<Waypoint onEnter={() => fetchMore({
+					variables: { _id: data?.getProducts[data.getProducts.length - 1].id },
+					updateQuery: (prev, { fetchMoreResult }) => {
+						if (!fetchMoreResult) return
+						return {
+							getProducts: [...prev.getProducts, ...fetchMoreResult.getProducts]
+						}
+					}
+				})} />
+			)}
 			{message}
 			{/* <Paginate pages={pages} page={page} isAdmin={true} /> */}
 		</>

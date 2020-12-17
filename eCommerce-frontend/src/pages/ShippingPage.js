@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import CheckoutSteps from '../components/CheckoutSteps'
 
 import FormContainer from '../components/FormContainer'
+import Meta from '../components/Meta'
 // import CheckoutSteps from '../components/CheckoutSteps'
 import { CartContext } from '../context/CartContext'
 
@@ -23,6 +24,7 @@ const ShippingPage = ({ history }) => {
 
 	return (
 		<FormContainer>
+			<Meta title='Shipping' />
 			<CheckoutSteps step1 step2 />
 			<h1>Shipping</h1>
 			<Form onSubmit={submitHandler}>

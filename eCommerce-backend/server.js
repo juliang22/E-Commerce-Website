@@ -28,13 +28,21 @@ const server = new ApolloServer({
 })
 
 //Using an express server because file uploading is apparently broken on normal apollo server lol wutttt: https://github.com/apollographql/apollo-server/issues/3508
+import * as path from 'path'
+const { dirname } = path
+import { fileURLToPath } from 'url'
+
 const app = express()
 app.use(graphqlUploadExpress())
-app.use(express.static('data')) //exposes data folder to public so static images can be served to frontend
+const __dirname = dirname(fileURLToPath(import.meta.url))
+console.log(__dirname);
+console.log(path.resolve('./'))
+app.use(express.static(path.join(__dirname, '/data'))) //exposes data folder to public so static images can be served to frontend
 server.applyMiddleware({
 	app,
 	cors: corsOptions
 })
+
 
 const connectDB = async () => {
 	try {
@@ -49,8 +57,6 @@ const connectDB = async () => {
 	} catch (error) {
 		console.log(`Error: ${error.message}`)
 		server.stop()
-		server.close()
-		process.exit(1)
 	}
 }
 await connectDB()

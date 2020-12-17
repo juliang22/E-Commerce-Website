@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage'
 import { UPDATE_USER_PROFILE } from '../util/queries';
 import { FETCH_USER_ORDERS_QUERY } from '../util/queries';
+import Meta from '../components/Meta';
 
 const ProfilePage = ({ location, history }) => {
 	const [newUsername, setNewUsername] = useState('')
@@ -48,6 +49,7 @@ const ProfilePage = ({ location, history }) => {
 
 	return (
 		<Row>
+			<Meta title='Profile' />
 			<Col md={4}>
 				<h2>Update Profile</h2>
 				{error}

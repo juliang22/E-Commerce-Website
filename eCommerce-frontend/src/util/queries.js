@@ -19,19 +19,30 @@ export const FETCH_PRODUCT_QUERY = gql`
 `
 
 export const FETCH_PRODUCTS_QUERY = gql`
-{
-	getProducts {
-	  name
-	  image
-	  description
-	  brand
-	  category
-	  price
-	  countInStock
-	  rating
-	  numReviews
-	  id
-	}
+	query($_id: ID){
+		getProducts(_id: $_id) {
+		name
+		image
+		description
+		brand
+		category
+		price
+		countInStock
+		rating
+		numReviews
+		id
+		}
+  }
+`
+
+export const GET_TOP_PRODUCTS = gql`
+	{
+		getTopProducts {
+			name
+			image
+			price
+			id
+		}
   }
 `
 

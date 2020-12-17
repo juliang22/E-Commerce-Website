@@ -77,13 +77,14 @@ export default gql`
 	scalar Upload 
 	
 	type Query {
-		getProducts: [Product]
+		getProducts(_id: ID): [Product]
 		getProduct(productID: ID!): Product
 		getPayPalClientID: String!
 		getUserOrders: [Order]!
 		getUserOrder(orderID: ID!): [Order]!
 		getUsers: [User]!
 		getOrders: [Order]!
+		getTopProducts: [Product]!
 	}
 	type Mutation {
 		login(email: String!, password: String!): User!

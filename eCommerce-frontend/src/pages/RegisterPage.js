@@ -7,6 +7,7 @@ import FormContainer from '../components/FormContainer'
 import { REGISTER_USER, LOGIN_USER } from '../util/queries';
 import { AuthContext } from '../context/AuthContext'
 import { useMutation } from '@apollo/client'
+import Meta from '../components/Meta'
 
 const RegisterScreen = ({ location, history }) => {
 
@@ -47,6 +48,7 @@ const RegisterScreen = ({ location, history }) => {
 		user ?
 			<Redirect to="/"></Redirect> :
 			<FormContainer>
+				<Meta title='Register' />
 				<h1>Sign Up</h1>
 				{Object.keys(errors).length > 0 && <ErrorMessage error={errors} variant='danger'></ErrorMessage>}
 				<Form onSubmit={registerHandler}>

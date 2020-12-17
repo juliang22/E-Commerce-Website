@@ -7,6 +7,7 @@ import ErrorMessage from '../components/ErrorMessage'
 import FormContainer from '../components/FormContainer'
 import { AuthContext } from '../context/AuthContext'
 import { LOGIN_USER } from '../util/queries';
+import Meta from '../components/Meta';
 
 const LoginScreen = ({ location, history }) => {
 	const [email, setEmail] = useState('')
@@ -33,6 +34,7 @@ const LoginScreen = ({ location, history }) => {
 
 	return (
 		<FormContainer>
+			<Meta title='Login' />
 			<h1>Sign In</h1>
 			{Object.keys(errors).length > 0 && <ErrorMessage error={errors} variant='danger'></ErrorMessage>}
 			<Form onSubmit={loginHandler}>

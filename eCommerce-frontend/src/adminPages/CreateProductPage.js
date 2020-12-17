@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client'
 import ErrorMessage from '../components/ErrorMessage'
 import { CREATE_PRODUCT, FETCH_PRODUCTS_QUERY } from '../util/queries';
 import { Alert } from 'react-bootstrap'
+import Meta from '../components/Meta'
 
 const CreateProductPage = ({ history }) => {
 
@@ -32,6 +33,7 @@ const CreateProductPage = ({ history }) => {
 
 	return (
 		<div>
+			<Meta title='Create Product' />
 			<Link to='/admin/productslist' className='btn btn-light my-3'>
 				Go Back
       			</Link>

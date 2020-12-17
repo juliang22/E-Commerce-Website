@@ -7,6 +7,7 @@ import { FETCH_PRODUCT_QUERY, EDIT_PRODUCT } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage'
 import FormContainer from '../components/FormContainer'
 import ProductForm from '../components/ProductForm'
+import Meta from '../components/Meta';
 
 const EditProducePage = ({ match, history }) => {
 	const productID = match.params.id
@@ -24,32 +25,6 @@ const EditProducePage = ({ match, history }) => {
 		}
 	})
 
-
-
-
-	// const uploadFileHandler = async (e) => {
-	// 	const file = e.target.files[0]
-	// 	const formData = new FormData()
-	// 	formData.append('image', file)
-	// 	setUploading(true)
-
-	// 	try {
-	// 		const config = {
-	// 			headers: {
-	// 				'Content-Type': 'multipart/form-data',
-	// 			},
-	// 		}
-
-	// 		const { data } = await axios.post('/api/upload', formData, config)
-
-	// 		setImage(data)
-	// 		setUploading(false)
-	// 	} catch (error) {
-	// 		console.error(error)
-	// 		setUploading(false)
-	// 	}
-	// }
-
 	const submitHandler = ({ e, id, name, price, image, brand, category, countInStock, description }) => {
 		e.preventDefault()
 		image = typeof image === 'string' ? undefined : image
@@ -58,10 +33,9 @@ const EditProducePage = ({ match, history }) => {
 		})
 	}
 
-
-
 	return (
 		<>
+			<Meta title='Edit Product' />
 			<Link to='/admin/productslist' className='btn btn-light my-3'>
 				Go Back
       </Link>

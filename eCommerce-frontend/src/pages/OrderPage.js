@@ -9,6 +9,7 @@ import { FETCH_ORDER_QUERY, EDIT_DELIVERY_STATUS } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage';
 import Skeleton from 'react-loading-skeleton';
 import { CartContext } from '../context/CartContext';
+import Meta from '../components/Meta';
 
 
 const OrderPage = ({ match, history }) => {
@@ -49,6 +50,7 @@ const OrderPage = ({ match, history }) => {
 
 	return (
 		<>
+			<Meta title='Order' />
 			{/* Only logged in user or admins has access to their order */}
 			{!loading && !loggedInUser.isAdmin && user._id !== loggedInUser.id ?
 				<Redirect to='/' />

@@ -20,18 +20,18 @@ const imageHandler = async (image) => {
 
 const productsResolver = {
 	Query: {
-		// @desc	Fetch all products
-		// @access	Public
-		async getProducts() {
+		async getProducts(_, { _id }) {
 			try {
-				const products = await Product.find().sort({ createdAt: -1 });
-				return products
+				//Triggers if going to the next page/scrolling down
+				if (_id) return await Product.find({ _id: { $gt: _id } }).limit(8)
+				else return await Product.find({}).sort({ _id }).limit(25)
 			} catch (err) {
 				throw new Error(err)
 			}
 		},
-		// @desc	Fetch all products
-		// @access	Public
+		async getTopProducts() {
+			return await Product.find({}).sort({ rating: -1 }).limit(3)
+		},
 		async getProduct(_, { productID }) {
 			try {
 				const product = await Product.findById(productID).populate('reviews')

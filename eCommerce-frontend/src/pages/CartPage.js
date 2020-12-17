@@ -4,6 +4,7 @@ import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 
 import ErrorMessage from '../components/ErrorMessage'
 import { CartContext } from '../context/CartContext'
+import Meta from '../components/Meta';
 
 const CartPage = ({ match, location, history }) => {
 	const { cartItems, updateCart } = useContext(CartContext)
@@ -15,6 +16,7 @@ const CartPage = ({ match, location, history }) => {
 
 	return (
 		<Row>
+			<Meta title='Cart' />
 			<Col md={8}>
 				<h1>Shopping Cart</h1>
 				{Object.keys(cartItems).length === 0 ?

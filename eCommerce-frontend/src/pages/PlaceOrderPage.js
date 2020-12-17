@@ -10,6 +10,7 @@ import CheckoutSteps from '../components/CheckoutSteps'
 import { CREATE_ORDER, FETCH_USER_ORDERS_QUERY } from '../util/queries';
 import { GET_PAYPAL_CLIENTID } from '../util/queries';
 import ErrorMessage from '../components/ErrorMessage';
+import Meta from '../components/Meta';
 
 //<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 const PlaceOrderPage = ({ history }) => {
@@ -108,6 +109,7 @@ const PlaceOrderPage = ({ history }) => {
 	if (loading) return <h1>Submitting Order...</h1>
 	return (
 		<>
+			<Meta title='Place Order' />
 			{error ? error : false}
 			<CheckoutSteps step1 step2 step3 step4 />
 			<Row>
@@ -204,7 +206,11 @@ const PlaceOrderPage = ({ history }) => {
 								)}
 							</ListGroup.Item>
 							<ListGroup.Item>
-								<Button onClick={testProps}>Test checkout</Button>
+								{/* <Button onClick={testProps}>Test checkout</Button> */}
+								<Button style={{ display: 'flex', margin: '0 auto' }} >
+									<Link to="/" style={{ color: 'white' }}>Return to Shopping</Link>
+								</Button>
+
 							</ListGroup.Item>
 						</ListGroup>
 					</Card>
