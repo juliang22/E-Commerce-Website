@@ -8,7 +8,6 @@ const initialState = { user: null }
 const decodeToken = (token = localStorage.getItem('UserToken'), isAdmin = (localStorage.getItem('isAdmin') === 'true')) => {
 	if (token) {
 		const decodedToken = jwtDecode(token)
-		console.log(decodedToken)
 		if (decodedToken.exp * 1000 < Date.now) { //checking expiration date of decoded token
 			localStorage.removeItem('UserToken')
 		} else {

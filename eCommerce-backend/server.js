@@ -44,6 +44,8 @@ console.log(__dirname);
 console.log(path.resolve('./'))
 app.use(express.static(path.join(__dirname, '/data'))) //exposes data folder to public so static images can be served to frontend
 
+
+//This goes into our frontend and serves our build file as a static asset. Make sure to go into frontend and run npm build whenever changes are made!
 if (process.env.NODE_ENV === 'production') {
 	app.use(express.static(path.join(__dirname, '../eCommerce-frontend/build')))
 	app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../eCommerce-frontend', 'build', 'index.html')))

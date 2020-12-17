@@ -17,7 +17,6 @@ const LoginScreen = ({ location, history }) => {
 	const { login } = useContext(AuthContext)
 	const [loginUser, { loading }] = useMutation(LOGIN_USER, {
 		update(_, result) {
-			console.log("Logged in data: ", result.data.login)
 			login(result.data.login) //This sends the logged in user data (after successful login) to AuthContext where the token is added to the authorization header
 			history.push('/')
 		},
