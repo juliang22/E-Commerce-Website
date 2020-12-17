@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cd eCommerce-backend && npm start",
+    "start": "cd eCommerce-backend && npm i && npm start",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix eCommerce-frontend && npm build --prefix eCommerce-frontend"
   },
   "repository": {
