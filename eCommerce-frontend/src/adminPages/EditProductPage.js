@@ -1,5 +1,4 @@
-import axios from 'axios'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client';
 import { Link } from 'react-router-dom'
 
@@ -15,7 +14,7 @@ const EditProducePage = ({ match, history }) => {
 
 	const [error, setError] = useState(false)
 
-	const [editProduct, editLoading] = useMutation(EDIT_PRODUCT, {
+	const [editProduct] = useMutation(EDIT_PRODUCT, {
 		onCompleted: () => {
 			history.push('/admin/productslist')
 		},

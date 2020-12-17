@@ -9,7 +9,7 @@ import Meta from '../components/Meta'
 
 const ProductListScreen = ({ history, match }) => {
 
-	const { data, loading, fetchMore } = useQuery(FETCH_PRODUCTS_QUERY)
+	const { data, fetchMore } = useQuery(FETCH_PRODUCTS_QUERY)
 	const [error, setError] = useState(false)
 	const [message, setMessage] = useState(false)
 	const [deleteProduct] = useMutation(DELETE_PRODUCT, {

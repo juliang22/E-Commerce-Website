@@ -50,10 +50,8 @@ const ordersResolver = {
 				const order = new Order({ orderItems: products, user, paymentResult, ...rest, createdAt: new Date().toISOString() })
 				user.orders.push(order._id)
 				await user.save()
-				console.log(order);
 				if (order) {
 					const res = await order.save()
-					console.log(res._doc);
 					return { ...res._doc }
 				} else throw new Error("Order creation unsuccessful")
 			}).catch(err => {

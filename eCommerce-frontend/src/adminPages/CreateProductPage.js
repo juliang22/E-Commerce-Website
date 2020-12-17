@@ -13,7 +13,7 @@ const CreateProductPage = ({ history }) => {
 
 	const [error, setError] = useState(false)
 
-	const [createProduct, createLoading] = useMutation(CREATE_PRODUCT, {
+	const [createProduct] = useMutation(CREATE_PRODUCT, {
 		refetchQueries: [{ query: FETCH_PRODUCTS_QUERY }],
 		onCompleted: () => {
 			history.push('/admin/productslist')

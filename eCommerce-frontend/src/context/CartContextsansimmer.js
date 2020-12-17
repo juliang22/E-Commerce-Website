@@ -44,7 +44,6 @@ const cartReducer = (state, action) => {
 					//Deleting a product
 					...state,
 					cartItems: Object.keys(state.cartItems).reduce((newObj, key) => {
-						console.log(key);
 						if (key !== action.payload.name) newObj[key] = state.cartItems[key]
 						return newObj
 					}, {})

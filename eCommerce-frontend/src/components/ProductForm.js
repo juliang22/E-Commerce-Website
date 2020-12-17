@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Card } from 'react-bootstrap'
-import { useMutation } from '@apollo/client'
 
-//import FileUpload from './FileUpload'
-import { UPLOAD_FILE } from '../util/queries'
 // Import React FilePond
-import { FilePond, File, registerPlugin } from 'react-filepond'
+import { FilePond, registerPlugin } from 'react-filepond'
 
 // Import FilePond styles
 import 'filepond/dist/filepond.min.css'
@@ -30,7 +27,6 @@ const ProductForm = ({ data, submitHandler }) => {
 	const [category, setCategory] = useState(data?.getProduct?.category || '')
 	const [countInStock, setCountInStock] = useState(data?.getProduct?.countInStock || 0)
 	const [description, setDescription] = useState(data?.getProduct?.description || '')
-	const [uploading, setUploading] = useState(false)
 
 	useEffect(() => {
 		if (files.length !== 0) setImage(false)
@@ -58,23 +54,6 @@ const ProductForm = ({ data, submitHandler }) => {
 						onChange={(e) => setPrice(e.target.value)}
 					></Form.Control>
 				</Form.Group>
-
-				{/* <Form.Group controlId='image'>
-					<Form.Label>Image</Form.Label>
-					<Form.Control
-						type='text'
-						placeholder={'Enter image url'}
-						value={image}
-						onChange={(e) => setImage(e.target.value)}
-					></Form.Control>
-					<Form.File
-						id='image-file'
-						label='Choose File'
-						custom
-						onChange={uploadFileHandler}
-					></Form.File>
-				</Form.Group> */}
-
 				{image ?
 					<Card.Img src={image} variant='top'></Card.Img> :
 					false
@@ -88,7 +67,6 @@ const ProductForm = ({ data, submitHandler }) => {
 					name="files"
 					labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
 				/>
-
 
 				<Form.Group controlId='brand'>
 					<Form.Label>Brand</Form.Label>

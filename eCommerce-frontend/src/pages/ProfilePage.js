@@ -24,7 +24,6 @@ const ProfilePage = ({ location, history }) => {
 	const [updateProfile] = useMutation(UPDATE_USER_PROFILE, {
 		update(_, result) {
 			setSuccess(<Alert variant='success'>Profile Updated</Alert>)
-			console.log("result", result.data.updateUserProfile)
 			login(result.data.updateUserProfile)
 			setError(false)
 			setNewUsername('')

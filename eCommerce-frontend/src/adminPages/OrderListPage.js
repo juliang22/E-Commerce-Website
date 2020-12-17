@@ -1,17 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { FETCH_ALL_ORDERS_QUERY } from '../util/queries';
-import ErrorMessage from '../components/ErrorMessage'
 import Meta from '../components/Meta';
 
 
 const OrderListPage = ({ history }) => {
 
   const { data, loading } = useQuery(FETCH_ALL_ORDERS_QUERY)
-  if (data) console.log(data.getOrders)
 
   return (
     <>

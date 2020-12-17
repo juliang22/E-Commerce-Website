@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Row, Col, Button } from 'react-bootstrap'
-import { useQuery, useLazyQuery } from '@apollo/client';
+import React, { useState } from 'react'
+import { Row, Col } from 'react-bootstrap'
+import { useQuery } from '@apollo/client';
 import { FETCH_PRODUCTS_QUERY } from '../util/queries.js'
-import { Helmet } from 'react-helmet';
 import Fuse from "fuse.js";
 import { Waypoint } from 'react-waypoint';
 

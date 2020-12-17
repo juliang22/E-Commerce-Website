@@ -25,7 +25,6 @@ const PlaceOrderPage = ({ history }) => {
 	useEffect(() => {
 		if (data && !paypalLoading) {
 			const { getPayPalClientID: clientID } = data
-			console.log(clientID);
 			const script = document.createElement('script')
 			script.type = 'text/javascript'
 			script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`
@@ -35,16 +34,14 @@ const PlaceOrderPage = ({ history }) => {
 		}
 	}, [data, paypalLoading])
 
-	const testProps = () => history.push({
-		pathname: `/order/5fd273c36368f61f197c7a69`,
-		state: { justOrdered: true }
-	})
-
+	// const testProps = () => history.push({
+	// 	pathname: `/order/5fd273c36368f61f197c7a69`,
+	// 	state: { justOrdered: true }
+	// })
 
 	const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
 		refetchQueries: [{ query: FETCH_USER_ORDERS_QUERY }],
 		onCompleted(result) {
-			console.log(result.createOrder)
 			history.push({
 				pathname: `/order/${result.createOrder._id}`,
 				state: { justOrdered: true }
