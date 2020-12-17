@@ -22,7 +22,8 @@ const connectDB = async () => {
 		process.exit(1)
 	}
 }
-await connectDB()
+// await connectDB()
+connectDB()
 
 
 const importData = async () => {

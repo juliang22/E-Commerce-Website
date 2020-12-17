@@ -16,7 +16,7 @@ const imageHandler = async (image) => {
 	await stream.pipe(fs.createWriteStream(pathName))
 	// Change next line before deployment from local host to server i guess?
 	console.log("DIRNAME", __dirname);
-	return `https://juliang22-ecommerce-backend.herokuapp.com/images/${filename}`
+	return `${process.env.HEROKU_HOST}/images/${filename}`
 }
 
 const productsResolver = {
