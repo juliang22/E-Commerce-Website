@@ -10,7 +10,7 @@
     "server": "nodemon eCommerce-backend/server.js",
     "client": "cd eCommerce-frontend && npm start",
     "clean": "pkill node && lsof -i tcp:5000 | awk '{if(NR>1) print $2}' | xargs kill -9",
-    "dev": "concurrently \" npm run server\" \" npm run client\"",
+    "dev": "NPM_CONFIG_PRODUCTION=false && concurrently \" npm run server\" \" npm run client\"",
     "data:import": "node eCommerce-backend/data/seeder",
     "data:destroy": "node eCommerce-backend/data/seeder -d",
     "build": "cd eCommerce-frontend && npm i && npm run build"

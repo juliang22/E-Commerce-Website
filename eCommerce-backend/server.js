@@ -15,12 +15,8 @@ const PORT = process.env.PORT || 5000
 const MONGODB = process.env.MONGODB
 const { ApolloServer } = apollo
 
-// const corsOptions = {
-// 	origin: "http://localhost:3000",
-// 	credentials: true
-// };
 const corsOptions = {
-	origin: "https://ecommerce-frontend-486d7.web.app/",
+	origin: "http://localhost:3000",
 	credentials: true
 };
 
