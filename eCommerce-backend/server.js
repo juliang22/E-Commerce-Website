@@ -69,7 +69,8 @@ const connectDB = async () => {
 		server.stop()
 	}
 }
-await connectDB()
+// await connectDB()
+connectDB()
 
 
 
