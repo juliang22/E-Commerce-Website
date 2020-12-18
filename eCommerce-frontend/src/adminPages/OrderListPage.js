@@ -30,7 +30,7 @@ const OrderListPage = ({ history }) => {
         <tbody>
           {loading ?
             <h1>Loading...</h1> :
-            data.getOrders.map(order => (
+            data?.getOrders.map(order => (
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.user && order.user.username}</td>

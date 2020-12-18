@@ -74,7 +74,7 @@ const UserListScreen = ({ history }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{data.getUsers.map(user => (
+							{data?.getUsers.map(user => (
 								<tr key={user._id}>
 									<td>{user._id}</td>
 									<td>{user.username}</td>
