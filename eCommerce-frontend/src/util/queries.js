@@ -18,9 +18,26 @@ export const FETCH_PRODUCT_QUERY = gql`
 	}
 `
 
+//for searching on home page
+export const FETCH_ALL_PRODUCT_QUERY = gql`
+	{
+		getAllProducts {
+			name
+			image
+			description
+			price
+			countInStock
+			rating
+			numReviews
+			id
+			brand
+		}
+	}
+`
+
 export const FETCH_PRODUCTS_QUERY = gql`
-	query($_id: ID){
-		getProducts(_id: $_id) {
+	query($_id: ID $filter: String){
+		getProducts(_id: $_id filter: $filter) {
 		name
 		image
 		description

@@ -15,10 +15,15 @@ const PORT = process.env.PORT || 5000
 const MONGODB = process.env.MONGODB
 const { ApolloServer } = apollo
 
-const corsOptions = {
-	origin: "http://localhost:3000",
+
+const corsOptions = process.env.NODE_ENV === 'production' ? {
+	origin: "https://juliang22-ecommerce.herokuapp.com",
 	credentials: true
-};
+} :
+	{
+		origin: "http://localhost:3000",
+		credentials: true
+	}
 
 const server = new ApolloServer({
 	typeDefs,
@@ -29,8 +34,6 @@ const server = new ApolloServer({
 
 //Using an express server because file uploading is apparently broken on normal apollo server lol wutttt: https://github.com/apollographql/apollo-server/issues/3508
 const app = express()
-
-
 
 import * as path from 'path'
 const { dirname } = path
@@ -68,14 +71,3 @@ const connectDB = async () => {
 // await connectDB()
 connectDB()
 
-
-
-
-// mongoose
-// 	.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
-// 	.then(() => {
-// 		console.log('MongoDB Connected')
-// 		return server.listen(PORT)
-// 	})
-// 	.then(res => console.log(`Server running in ${process.env.NODE_ENV} mode at port ${PORT}`))
-// 	.catch(error => console.error(`Trouble connecting to MongoDB: ${error}`))

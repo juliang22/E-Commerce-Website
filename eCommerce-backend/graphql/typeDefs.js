@@ -77,7 +77,8 @@ export default gql`
 	scalar Upload 
 	
 	type Query {
-		getProducts(_id: ID): [Product]
+		getAllProducts: [Product]!
+		getProducts(_id: ID, filter: String): [Product]
 		getProduct(productID: ID!): Product
 		getPayPalClientID: String!
 		getUserOrders: [Order]!

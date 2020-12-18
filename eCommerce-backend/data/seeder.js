@@ -22,8 +22,10 @@ const connectDB = async () => {
 		process.exit(1)
 	}
 }
-// await connectDB()
-connectDB()
+// for dev use await
+await connectDB()
+// for production dont use await
+// connectDB()
 
 
 const importData = async () => {

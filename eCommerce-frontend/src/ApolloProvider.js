@@ -18,7 +18,11 @@ const handleError = onError(({ graphQLErrors, networkError }) => {
 	if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const httplink = createUploadLink({ uri: 'https://juliang22-ecommerce.herokuapp.com/graphql', credentials: 'include' });
+//! For production: 
+const httplink = createUploadLink({ uri: 'https://juliang22-ecommerce.herokuapp.com/graphql', credentials: 'include' })
+
+//! For dev: 
+// const httplink = createUploadLink({ uri: 'http://localhost:5000/graphql', credentials: 'include' })
 
 const authLink = setContext((_, { headers }) => {
 	// get the authentication token from local storage if it exists

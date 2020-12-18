@@ -21,10 +21,20 @@ const imageHandler = async (image) => {
 
 const productsResolver = {
 	Query: {
-		async getProducts(_, { _id }) {
+		getAllProducts: async () => await Product.find({}),
+		async getProducts(_, { _id, filter }) {
+			filter = filter === '' ? false : filter
 			try {
-				//Triggers if going to the next page/scrolling down
-				if (_id) return await Product.find({ _id: { $gt: _id } }).limit(8)
+				//if a user normally scrolls down and no filter is set
+				if (_id && !filter) return await Product.find({ _id: { $gt: _id } }).limit(8)
+				//inital query if a user sets a filter
+				else if (!_id && filter) return await Product.find({}).sort({ [filter]: -1 }).limit(25)
+				//if a user sets a filter then scrolls down
+				else if (_id && filter) {
+					const prod = await Product.findOne({ _id })
+					return await Product.find({ [filter]: { $lt: prod[filter] } }).sort({ [filter]: -1 }).limit(8)
+				}
+				// query on page load
 				else return await Product.find({}).sort({ _id }).limit(25)
 			} catch (err) {
 				throw new Error(err)
