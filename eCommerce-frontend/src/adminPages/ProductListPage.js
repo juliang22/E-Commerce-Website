@@ -47,6 +47,7 @@ const ProductListScreen = ({ history, match }) => {
 		if (window.confirm('Are you sure')) {
 			deleteProduct({ variables: { id } })
 		}
+		window.location.reload()
 	}
 
 	const createProductHandler = () => {

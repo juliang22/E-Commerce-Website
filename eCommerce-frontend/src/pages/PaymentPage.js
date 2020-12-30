@@ -40,14 +40,15 @@ const PaymentScreen = ({ history }) => {
 							checked
 							onChange={setPaymentMethod}
 						></Form.Check>
+						{/* TODO: Stripe is being buggy so I'm removing it for now */}
 						{/* <Form.Check
-              type='radio'
-              label='Stripe'
-              id='Stripe'
-              name='paymentMethod'
-              value='Stripe'
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            ></Form.Check> */}
+							type='radio'
+							label='Stripe'
+							id='Stripe'
+							name='paymentMethod'
+							value='Stripe'
+							onChange={(e) => setPaymentMethod(e.target.value)}
+						></Form.Check> */}
 					</Col>
 				</Form.Group>
 

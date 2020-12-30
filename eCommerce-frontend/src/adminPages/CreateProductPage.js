@@ -40,7 +40,7 @@ const CreateProductPage = ({ history }) => {
 			<FormContainer>
 				<h1>Create Product</h1>
 				{error}
-				<ProductForm submitHandler={createProductHandler}></ProductForm>
+				<ProductForm submitHandler={createProductHandler} create={'create'}></ProductForm>
 			</FormContainer>
 		</div>
 	)

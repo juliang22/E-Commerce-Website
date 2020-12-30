@@ -4,19 +4,43 @@ const { ApolloError } = apollo
 import * as path from 'path'
 import * as fs from 'fs'
 import { fileURLToPath } from 'url'
+import AWS from 'aws-sdk'
 
 import checkAuth from '../../util/checkAuth.js';
 
 const imageHandler = async (image) => {
-	const { createReadStream, filename, mimetype, encoding } = await image
-	const stream = createReadStream()
-	const { dirname } = path
-	const __dirname = dirname(fileURLToPath(import.meta.url))
-	const pathName = path.join(__dirname, `../../data/images/${filename}`)
-	await stream.pipe(fs.createWriteStream(pathName))
-	// Change next line before deployment from local host to server i guess?
-	console.log("DIRNAME", __dirname);
-	return `${process.env.HEROKU_HOST}/images/${filename}`
+
+	//OLD - Saving to static backend folder (doesn't work cause heroku deletes everything when it puts server to sleep :( )
+	// const { createReadStream, filename, mimetype, encoding } = await image
+	// const stream = createReadStream()
+	// const { dirname } = path
+	// const __dirname = dirname(fileURLToPath(import.meta.url))
+	// const pathName = path.join(__dirname, `../../data/images/${filename}`)
+	// await stream.pipe(fs.createWriteStream(pathName))
+	// // Change next line before deployment from local host to server i guess?
+	// console.log("DIRNAME", __dirname);
+	// return `${process.env.HEROKU_HOST}/images/${filename}`
+
+	//NEW - Uploads images to s3 bucket
+	const { createReadStream, filename, mimetype } = await image
+	const s3 = new AWS.S3({
+		accessKeyId: process.env.S3_ACCESS_KEY_ID,
+		secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+	});
+
+	const stream = createReadStream(filename)
+	const params = {
+		Bucket: 'juliang22-ecommerce-images',
+		Key: filename,
+		Body: stream,
+		ContentType: mimetype
+	};
+	s3.upload(params, function (err, data) {
+		if (err) throw err;
+		console.log(`File uploaded successfully. ${data.Location}`)
+		return data.Location.toString()
+	});
+	return `https://juliang22-ecommerce-images.s3.us-east-2.amazonaws.com/${filename}`
 }
 
 const productsResolver = {
@@ -35,7 +59,7 @@ const productsResolver = {
 					return await Product.find({ [filter]: { $lt: prod[filter] } }).sort({ [filter]: -1 }).limit(8)
 				}
 				// query on page load
-				else return await Product.find({}).sort({ _id }).limit(25)
+				else return await Product.find({}).sort({ createdAt: -1 }).limit(25)
 			} catch (err) {
 				throw new Error(err)
 			}

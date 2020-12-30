@@ -82,7 +82,7 @@ const ProductPage = ({ history, match }) => {
 									</Rating>
 								</ListGroup.Item>
 							}
-							<ListGroup.Item>{price ? `Price: $${price}` : <Skeleton count={1} />}</ListGroup.Item>
+							<ListGroup.Item>{price || price === 0 ? `Price: $${price}` : <Skeleton count={1} />}</ListGroup.Item>
 							<ListGroup.Item>{description ? `${description}` : <Skeleton count={1} />}</ListGroup.Item>
 						</ListGroup>
 					</Col>

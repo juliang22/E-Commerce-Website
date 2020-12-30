@@ -18,7 +18,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
 
-const ProductForm = ({ data, submitHandler }) => {
+const ProductForm = ({ data, submitHandler, create }) => {
 	const [name, setName] = useState(data?.getProduct?.name || '')
 	const [price, setPrice] = useState(data?.getProduct?.price || 0)
 	const [image, setImage] = useState(data?.getProduct?.image || '')
@@ -109,8 +109,8 @@ const ProductForm = ({ data, submitHandler }) => {
 				</Form.Group>
 
 				<Button type='submit' variant='primary'>
-					Update
-            		</Button>
+					{create === 'create' ? 'Create' : 'Update'}
+				</Button>
 			</Form>
 		</div>
 	)

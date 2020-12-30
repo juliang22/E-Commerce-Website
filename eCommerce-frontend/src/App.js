@@ -1,29 +1,37 @@
-import './css/index.css';
-import './css/bootstrap.min.css';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import './css/index.css'
+import './css/bootstrap.min.css'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+// import { Elements } from '@stripe/react-stripe-js'
+// import { loadStripe } from '@stripe/stripe-js'
 
-import Footer from './components/Footer';
-import Header from './components/Header';
-import { Container } from 'react-bootstrap';
+import Footer from './components/Footer'
+import Header from './components/Header'
+import { Container } from 'react-bootstrap'
 import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
-import LoginPage from './pages/LoginPage';
-import CartPage from './pages/CartPage';
-import { CartContextProvider } from './context/CartContext';
-import { AuthContextProvider } from './context/AuthContext';
-import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import AuthRoute from './util/AuthRoute';
-import ShippingPage from './pages/ShippingPage';
-import PaymentPage from './pages/PaymentPage';
-import PlaceOrderPage from './pages/PlaceOrderPage';
-import OrderPage from './pages/OrderPage';
-import UserListScreen from './adminPages/UserListPage';
-import AdminRoute from './util/AdminRoute';
-import ProductListPage from './adminPages/ProductListPage';
-import EditProductPage from './adminPages/EditProductPage';
-import CreateProductPage from './adminPages/CreateProductPage';
-import OrderListPage from './adminPages/OrderListPage';
+import LoginPage from './pages/LoginPage'
+import CartPage from './pages/CartPage'
+import { CartContextProvider } from './context/CartContext'
+import { AuthContextProvider } from './context/AuthContext'
+import RegisterPage from './pages/RegisterPage'
+import ProfilePage from './pages/ProfilePage'
+import AuthRoute from './util/AuthRoute'
+import ShippingPage from './pages/ShippingPage'
+import PaymentPage from './pages/PaymentPage'
+import PlaceOrderPage from './pages/PlaceOrderPage'
+import OrderPage from './pages/OrderPage'
+import UserListScreen from './adminPages/UserListPage'
+import AdminRoute from './util/AdminRoute'
+import ProductListPage from './adminPages/ProductListPage'
+import EditProductPage from './adminPages/EditProductPage'
+import CreateProductPage from './adminPages/CreateProductPage'
+import OrderListPage from './adminPages/OrderListPage'
+
+
+//Stripe Stuff
+//TODO: Stripe is being buggy so I'm remobing it for now
+// const stripePromise = loadStripe('pk_test_51HzoNCApe1jmCaBi4CLRYqf8lqRzIY6uhLzVd7hPv0qOAEXAv24AOS8xagXobTRBUMAcqlrvPAJ1Jq6r2hZ512YO00jo60i4P4');
+// console.log(stripePromise);
 
 const App = () => {
   return (
@@ -43,7 +51,9 @@ const App = () => {
               {/* Accessed by logged in users */}
               <AuthRoute path={'/shipping'} component={ShippingPage} />
               <AuthRoute path={'/payment'} component={PaymentPage} />
+              {/* <Elements stripe={stripePromise}> */}
               <AuthRoute path={'/placeorder'} component={PlaceOrderPage} />
+              {/* </Elements> */}
               <AuthRoute path='/order/:id?' component={OrderPage} redirect='/login' />
               <AuthRoute path='/profile' component={ProfilePage} redirect='/login' />
               {/* Accessed by admin users only */}
@@ -58,7 +68,7 @@ const App = () => {
         </Router >
       </CartContextProvider>
     </AuthContextProvider>
-  );
+  )
 }
 
-export default App;
+export default App

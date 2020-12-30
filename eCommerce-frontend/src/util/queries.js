@@ -31,6 +31,7 @@ export const FETCH_ALL_PRODUCT_QUERY = gql`
 			numReviews
 			id
 			brand
+			category
 		}
 	}
 `
@@ -183,7 +184,7 @@ mutation createOrder(
 		shippingPrice: $shippingPrice 
 		taxPrice: $taxPrice 
 		totalPrice: $totalPrice) {
-			user { username _id }
+			user { username _id email}
 			orderItems {
 				product { name }
 				qtyOrdered

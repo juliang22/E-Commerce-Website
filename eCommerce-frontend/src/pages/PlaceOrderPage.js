@@ -1,16 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Button, Row, Col, ListGroup, Image, Card, Alert } from 'react-bootstrap'
-import { useMutation, useQuery } from '@apollo/client';
-import { PayPalButton } from 'react-paypal-button-v2';
-import Skeleton from 'react-loading-skeleton';
+import { useMutation, useQuery } from '@apollo/client'
+// import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 
-import { CartContext } from '../context/CartContext';
-import CheckoutSteps from '../components/CheckoutSteps'
-import { CREATE_ORDER, FETCH_USER_ORDERS_QUERY } from '../util/queries';
-import { GET_PAYPAL_CLIENTID } from '../util/queries';
-import ErrorMessage from '../components/ErrorMessage';
-import Meta from '../components/Meta';
+import { CartContext } from '../context/CartContext'
+import { CREATE_ORDER, FETCH_USER_ORDERS_QUERY } from '../util/queries'
+import { GET_PAYPAL_CLIENTID } from '../util/queries'
+import ErrorMessage from '../components/ErrorMessage'
+import PlaceOrderUI from './PlaceOrderUI'
+import { Alert } from 'react-bootstrap'
+import useEmail from '../hooks/useEmail';
+
 
 //<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 const PlaceOrderPage = ({ history }) => {
@@ -20,6 +19,7 @@ const PlaceOrderPage = ({ history }) => {
 	const [sdkReady, setSDKReady] = useState(false)
 	const [checkoutError, setCheckoutError] = useState(false)
 	const [error, setError] = useState(false)
+	const { emailCustomer, emailOwner } = useEmail()
 
 	//Paypal Setup
 	useEffect(() => {
@@ -42,8 +42,18 @@ const PlaceOrderPage = ({ history }) => {
 	const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
 		refetchQueries: [{ query: FETCH_USER_ORDERS_QUERY }],
 		onCompleted(result) {
+			const { createOrder: { _id, orderItems, user } } = result
+			const productsString = orderItems.reduce((acc, item, i) => i === 0 ? `${item.product.name}` : `${acc}, ${item.product.name}`, '')
+			emailCustomer({
+				order_number: _id,
+				to_name: user.username,
+				product_list: productsString,
+				to_email: user.email
+			})
+			emailOwner({ to_name: user.username, product_list: productsString })
+
 			history.push({
-				pathname: `/order/${result.createOrder._id}`,
+				pathname: `/order/${_id}`,
 				state: { justOrdered: true }
 			})
 		},
@@ -78,7 +88,7 @@ const PlaceOrderPage = ({ history }) => {
 		Number(orderInfo.taxPrice)
 	).toFixed(2)
 
-	const placeOrderHandler = (paymentResult) => {
+	const paypalOrderHandler = (paymentResult) => {
 		if (!paymentResult) setCheckoutError(
 			<Alert variant='danger'>Error Completing purchase. Please try again or contact fake@email.com for support</Alert>
 		)
@@ -103,117 +113,39 @@ const PlaceOrderPage = ({ history }) => {
 		}
 	}
 
+
+	// const stripe = useStripe();
+	// console.log(stripe);
+	// const elements = useElements();
+	// console.log(elements);
+
+	// const stripeOrderHandler = async (e) => {
+	// 	e.preventDefault();
+	// 	if (!stripe || !elements) return
+	// 	const cardElement = elements.getElement(CardElement)
+	// 	const { error, paymentMethod } = await stripe.createPaymentMethod({
+	// 		type: 'card',
+	// 		card: cardElement,
+	// 	})
+
+	// 	if (error) console.log('[error]', error);
+	// 	else console.log('[PaymentMethod]', paymentMethod);
+	// }
+
 	if (loading) return <h1>Submitting Order...</h1>
 	return (
-		<>
-			<Meta title='Place Order' />
-			{error ? error : false}
-			<CheckoutSteps step1 step2 step3 step4 />
-			<Row>
-				<Col md={8}>
-					<ListGroup variant='flush'>
-						<ListGroup.Item>
-							<h2>Shipping</h2>
-							<p>
-								<strong>Address: </strong>
-								{shippingAddress.address}, {shippingAddress.city}{' '}
-								{shippingAddress.postalCode},{' '}
-								{shippingAddress.country}
-							</p>
-						</ListGroup.Item>
-
-						<ListGroup.Item>
-							<h2>Payment Method</h2>
-							<strong>Method: </strong>
-							{paymentInfo.payment}
-						</ListGroup.Item>
-
-						<ListGroup.Item>
-							<h2>Order Items</h2>
-							{Object.keys(cartItems).length === 0 ? (
-								<Alert variant='danger'>Your cart is empty</Alert>
-							) : (
-									<ListGroup variant='flush'>
-										{Object.values(cartItems).map((item, index) => (
-											<ListGroup.Item key={index}>
-												<Row>
-													<Col md={1}>
-														<Image
-															src={item.image}
-															alt={item.name}
-															fluid
-															rounded
-														/>
-													</Col>
-													<Col>
-														<Link to={`/product/${item.id}`}>
-															{item.name}
-														</Link>
-													</Col>
-													<Col md={4}>
-														{item.qty} x ${item.price} = ${item.qty * item.price}
-													</Col>
-												</Row>
-											</ListGroup.Item>
-										))}
-									</ListGroup>
-								)}
-						</ListGroup.Item>
-					</ListGroup>
-				</Col>
-				<Col md={4}>
-					<Card>
-						<ListGroup variant='flush'>
-							<ListGroup.Item>
-								<h2>Order Summary</h2>
-							</ListGroup.Item>
-							<ListGroup.Item>
-								<Row>
-									<Col>Items</Col>
-									<Col>${orderInfo.itemsPrice}</Col>
-								</Row>
-							</ListGroup.Item>
-							<ListGroup.Item>
-								<Row>
-									<Col>Shipping</Col>
-									<Col>${orderInfo.shippingPrice}</Col>
-								</Row>
-							</ListGroup.Item>
-							<ListGroup.Item>
-								<Row>
-									<Col>Tax</Col>
-									<Col>${orderInfo.taxPrice}</Col>
-								</Row>
-							</ListGroup.Item>
-							<ListGroup.Item>
-								<Row>
-									<Col>Total</Col>
-									<Col>${orderInfo.totalPrice}</Col>
-								</Row>
-							</ListGroup.Item>
-							<ListGroup.Item>
-								{checkoutError}
-							</ListGroup.Item>
-							<ListGroup.Item>
-								{!sdkReady ? (<Skeleton count={1} height={60} />) : (
-									<PayPalButton
-										amount={orderInfo.totalPrice}
-										onSuccess={placeOrderHandler}
-									/>
-								)}
-							</ListGroup.Item>
-							<ListGroup.Item>
-								{/* <Button onClick={testProps}>Test checkout</Button> */}
-								<Button style={{ display: 'flex', margin: '0 auto' }} >
-									<Link to="/" style={{ color: 'white' }}>Return to Shopping</Link>
-								</Button>
-
-							</ListGroup.Item>
-						</ListGroup>
-					</Card>
-				</Col>
-			</Row>
-		</>
+		<PlaceOrderUI
+			error={error}
+			shippingAddress={shippingAddress}
+			paymentInfo={paymentInfo}
+			cartItems={cartItems}
+			orderInfo={orderInfo}
+			// orderHandler={paymentInfo.payment === 'PayPal' ? paypalOrderHandler : stripeOrderHandler}
+			orderHandler={paypalOrderHandler}
+			// paypalSDKReady={paymentInfo.payment === 'PayPal' ? sdkReady : stripe}
+			SDKReady={sdkReady}
+			checkoutError={checkoutError}
+		></PlaceOrderUI>
 	)
 }
 
