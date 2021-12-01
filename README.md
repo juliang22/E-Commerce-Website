@@ -8,9 +8,9 @@ Differences:
 - Used React Context instead of Redux and implemented Immer for easier state management
 - Used Apollo GraphQL instead of a REST API
 - Implemented fuzzy search with fuse.js
-- Implemented paginated scrolling
+- Implemented infinite scrolling
 - Implemented filtering
-- Implemented my own authentication
+- Implemented custom user authentication 
 - Implemented authorization depending on admin/logged in status
 - Made a data loading script to generated fake user data
 - Automated emails to client and customer
