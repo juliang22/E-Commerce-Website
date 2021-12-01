@@ -5,7 +5,7 @@ During the beginning of the COVID-19 pandemic, I decided to use my time in quara
 
 Differences:
 - Implemented my own file uploading on the backend
-- Used context instead of redux and implemented Immer for easier state management
+- Used React Context instead of Redux and implemented Immer for easier state management
 - Used apollo/graphql instead of a REST API
 - Implemented fuzzy search with fuse.js
 - Implemented paginated scrolling
