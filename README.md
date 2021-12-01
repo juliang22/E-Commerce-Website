@@ -1,7 +1,7 @@
 # E-Commerce-Website
 ECommerce website I built using a Traversy tutorial as a template, but fully building out the the backend myself with GraphQL/Apollo and switching using Context instead of Redux. Only thing thats the same is the UI 😋 
 
-During the beginning of the COVID-19 pandemic, I decided to use my time in quarantine to practice full-stack development. I built this ecommerce website based on a Traversy tutorial, but decided to use different technology to implement the actual product. I basically used the Bootstrap designs from the tutorial, but implemented all the functionality on my own. Here is a list of all the differences:
+During the beginning of the COVID-19 pandemic, I decided to use my time in quarantine to practice full-stack development. I built this ecommerce website based on a Traversy tutorial, but decided to use different technologies to implement the actual product. I basically used the Bootstrap designs from the tutorial, but implemented all the functionality on my own. Here is a list of all the differences:
 
 Differences:
 - Implemented my own file uploading on the backend
